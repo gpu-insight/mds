@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: 博图希 GPU 观察
 subtitle:
 description:
 keywords:
-author: John Doe
-language: en
+author: 博图希
+language: cn
 timezone:
 
 # URL
@@ -40,7 +40,7 @@ external_link:
   exclude:
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 highlight:
