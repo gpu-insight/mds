@@ -5,13 +5,17 @@
   
 
   
-  <title>GPU 观察</title>
+  <title>GPGPU-Sim 安装过程 | GPU 观察</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="GPU 观察">
-<meta property="og:url" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;index.html">
+  <meta name="description" content="1. 简介1.1 GPUGPU英文名称为Graphic Processing Unit，中文名称为图形处理器，主要用于计算机系统中的显示及图形处理，又称为Video Card(显卡)。 GPU具有一下特性：  针对高度并行的工作负载进行优化 高度可编程性 桌面级的超级计算机  1.2 GPGPU异构计算（Heterogeneous Computing）是指在异构计算系统上进行的并行计算。GPGPU">
+<meta name="keywords" content="GPGPU-Sim">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GPGPU-Sim 安装过程">
+<meta property="og:url" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;10&#x2F;23&#x2F;gpgpusim_install&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
+<meta property="og:description" content="1. 简介1.1 GPUGPU英文名称为Graphic Processing Unit，中文名称为图形处理器，主要用于计算机系统中的显示及图形处理，又称为Video Card(显卡)。 GPU具有一下特性：  针对高度并行的工作负载进行优化 高度可编程性 桌面级的超级计算机  1.2 GPGPU异构计算（Heterogeneous Computing）是指在异构计算系统上进行的并行计算。GPGPU">
 <meta property="og:locale" content="cn">
+<meta property="og:updated_time" content="2019-10-30T09:08:43.083Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
@@ -59,58 +63,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/10/30/hello-world/" class="article-date">
-  <time datetime="2019-10-30T09:08:43.083Z" itemprop="datePublished">2019-10-30</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/30/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/10/30/hello-world/" data-id="ck2d25zui00010pq4gts571fi" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-gpgpusim_install" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-gpgpusim_install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/10/23/gpgpusim_install/" class="article-date">
   <time datetime="2019-10-23T14:17:50.000Z" itemprop="datePublished">2019-10-23</time>
@@ -123,8 +76,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/23/gpgpusim_install/">GPGPU-Sim 安装过程</a>
+    <h1 class="article-title" itemprop="name">
+      GPGPU-Sim 安装过程
     </h1>
   
 
@@ -177,11 +130,23 @@
     </footer>
   </div>
   
-</article>
-
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/30/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+</nav>
 
   
-
+</article>
 
 </section>
         
