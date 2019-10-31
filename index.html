@@ -83,32 +83,32 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><h2 id="1-1-GPU"><a href="#1-1-GPU" class="headerlink" title="1.1 GPU"></a>1.1 GPU</h2><p>GPU英文名称为Graphic Processing Unit，中文名称为图形处理器，主要用于计算机系统中的显示及图形处理，又称为Video Card(显卡)。</p>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><h2 id="GPU"><a href="#GPU" class="headerlink" title="GPU"></a>GPU</h2><p>GPU英文名称为Graphic Processing Unit，中文名称为图形处理器，主要用于计算机系统中的显示及图形处理，又称为Video Card(显卡)。</p>
 <p>GPU具有一下特性：</p>
 <ul>
 <li>针对高度并行的工作负载进行优化</li>
 <li>高度可编程性</li>
 <li>桌面级的超级计算机</li>
 </ul>
-<h2 id="1-2-GPGPU"><a href="#1-2-GPGPU" class="headerlink" title="1.2 GPGPU"></a>1.2 GPGPU</h2><p>异构计算（Heterogeneous Computing）是指在异构计算系统上进行的并行计算。<br>GPGPU（General-purpose computing on graphics processing units）是一种利用处理图形任务的图形处理器来计算原本由中央处理器处理的通用计算任务。</p>
+<h2 id="GPGPU"><a href="#GPGPU" class="headerlink" title="GPGPU"></a>GPGPU</h2><p>异构计算（Heterogeneous Computing）是指在异构计算系统上进行的并行计算。<br>GPGPU（General-purpose computing on graphics processing units）是一种利用处理图形任务的图形处理器来计算原本由中央处理器处理的通用计算任务。</p>
 
 
-<h2 id="1-3-GPGPU-Sim"><a href="#1-3-GPGPU-Sim" class="headerlink" title="1.3 GPGPU-Sim"></a>1.3 GPGPU-Sim</h2><p>GPGPU-Sim 是一个时钟级别的GPU仿真模型，可以运行使用cuda或者OpenCL编写的GPU计算程序。GPGPU的github如下：<br><a href="https://github.com/gpgpu-sim/gpgpu-sim_distribution" target="_blank" rel="noopener">https://github.com/gpgpu-sim/gpgpu-sim_distribution</a></p>
-<h1 id="2-安装-GPGPU-Sim"><a href="#2-安装-GPGPU-Sim" class="headerlink" title="2. 安装 GPGPU Sim"></a>2. 安装 GPGPU Sim</h1><p>本文介绍在虚拟机Centos7上配置安装GPGPU sim环境。<br>需要准备环境：</p>
+<h2 id="GPGPU-Sim"><a href="#GPGPU-Sim" class="headerlink" title="GPGPU-Sim"></a>GPGPU-Sim</h2><p>GPGPU-Sim 是一个时钟级别的GPU仿真模型，可以运行使用cuda或者OpenCL编写的GPU计算程序。GPGPU的github如下：<br><a href="https://github.com/gpgpu-sim/gpgpu-sim_distribution" target="_blank" rel="noopener">https://github.com/gpgpu-sim/gpgpu-sim_distribution</a></p>
+<h1 id="安装-GPGPU-Sim"><a href="#安装-GPGPU-Sim" class="headerlink" title="安装 GPGPU Sim"></a>安装 GPGPU Sim</h1><p>本文介绍在虚拟机Centos7上配置安装GPGPU sim环境。<br>需要准备环境：</p>
 <ul>
 <li>Linux 环境：Centos 7</li>
 <li>Cuda环境：Cuda Toolkit 7.5 <a href="https://developer.nvidia.com/cuda-downloads" target="_blank" rel="noopener">https://developer.nvidia.com/cuda-downloads</a></li>
 <li>GPGPU sim：<a href="https://github.com/gpgpu-sim/gpgpu-sim_distribution" target="_blank" rel="noopener">https://github.com/gpgpu-sim/gpgpu-sim_distribution</a> （branch: dev）</li>
 </ul>
-<h2 id="2-1-安装Cuda"><a href="#2-1-安装Cuda" class="headerlink" title="2.1 安装Cuda"></a>2.1 安装Cuda</h2><p>GPGPU-Sim支持的Cuda版本有：4.2, 5.0, 5.5, 6.0, 7.5, 8.0, 9.0, 9.1。</p>
+<h2 id="安装Cuda"><a href="#安装Cuda" class="headerlink" title="安装Cuda"></a>安装Cuda</h2><p>GPGPU-Sim支持的Cuda版本有：4.2, 5.0, 5.5, 6.0, 7.5, 8.0, 9.0, 9.1。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum localinstall cuda-repo-rhel7-7.5-18.x86_64.rpm</span><br><span class="line">yum install cuda-tooklit-7-5</span><br></pre></td></tr></table></figure>
-<h2 id="2-2-编译GPGPU-Sim"><a href="#2-2-编译GPGPU-Sim" class="headerlink" title="2.2 编译GPGPU-Sim"></a>2.2 编译GPGPU-Sim</h2><h4 id="2-2-1-安装依赖库"><a href="#2-2-1-安装依赖库" class="headerlink" title="2.2.1 安装依赖库"></a>2.2.1 安装依赖库</h4><p>安装依赖:</p>
+<h2 id="编译安装GPGPU-Sim"><a href="#编译安装GPGPU-Sim" class="headerlink" title="编译安装GPGPU-Sim"></a>编译安装GPGPU-Sim</h2><h3 id="安装依赖库"><a href="#安装依赖库" class="headerlink" title="安装依赖库"></a>安装依赖库</h3><p>安装依赖:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># GPGPU-Sim dependencies:</span><br><span class="line">yum install gcc</span><br><span class="line">yum install gcc-c++</span><br><span class="line">yum install make</span><br><span class="line">yum install makedepend</span><br><span class="line">yum install xorg-x11-utils</span><br><span class="line">yum install bison</span><br><span class="line">yum install flex</span><br><span class="line">yum install zlib</span><br><span class="line"></span><br><span class="line"># GPGPU-Sim documentation dependencies:</span><br><span class="line">yum install doxygen</span><br><span class="line">yum install graphviz</span><br><span class="line"></span><br><span class="line"># AerialVision dependencies:</span><br><span class="line">yum install python-pmw</span><br><span class="line">yum install python-ply</span><br><span class="line">yum install python2-numpy</span><br><span class="line">yum install libpng12-devel</span><br><span class="line">yum install python-matplotlib</span><br></pre></td></tr></table></figure>
-<h4 id="2-2-2-编译"><a href="#2-2-2-编译" class="headerlink" title="2.2.2 编译"></a>2.2.2 编译</h4><p>编译前需要设置环境变量</p>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>编译前需要设置环境变量</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export CUDA_INSTALL_PATH=/usr/local/cuda</span><br><span class="line">export PATH=$&#123;CUDA_INSTALL_PATH&#125;/bin:$&#123;PATH&#125;</span><br><span class="line">source setup_environment</span><br></pre></td></tr></table></figure>
 <p>之后可以直接使用make进行编译：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j8</span><br></pre></td></tr></table></figure>
-<h2 id="2-3-运行demo"><a href="#2-3-运行demo" class="headerlink" title="2.3 运行demo"></a>2.3 运行demo</h2><p>cuda的helloworld程序如下</p>
+<h2 id="运行demo"><a href="#运行demo" class="headerlink" title="运行demo"></a>运行demo</h2><p>cuda的helloworld程序如下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">/* file: hello.cu */</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;cuda_runtime.h&gt;</span><br><span class="line"></span><br><span class="line">__global__ void add(int a, int b, int *c)</span><br><span class="line">&#123;</span><br><span class="line">    *c = a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int c;</span><br><span class="line">    int *dev_c;</span><br><span class="line">    cudaMalloc((void **)&amp;dev_c, sizeof(int));</span><br><span class="line">    add&lt;&lt;&lt;1, 1&gt;&gt;&gt;(2, 7, dev_c);</span><br><span class="line">    cudaMemcpy(&amp;c, &amp;dev_c, sizeof(int), cudaMemcpyDeviceToHost);</span><br><span class="line">    printf(&quot;2 + 7 = %d\n&quot;, c);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>编译程序时指定<code>--cudart shared</code>确保可执行程序动态链接到CUDA runtime库。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvcc --cudart shared -o hello hello.cu</span><br></pre></td></tr></table></figure>
@@ -120,7 +120,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/10/23/gpgpusim_install/" data-id="ck2d2fabl0000xzww0vuf18iw" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/10/23/gpgpusim_install/" data-id="ck2evfdvh0000yivs25277epe" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
