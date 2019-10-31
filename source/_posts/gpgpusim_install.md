@@ -1,12 +1,11 @@
-
 ---
 title: GPGPU-Sim 安装过程
 date: 2019-10-23 14:17:50
 tags: GPGPU-Sim
 ---
 
-# 1. 简介
-## 1.1 GPU
+# 简介
+## GPU
 GPU英文名称为Graphic Processing Unit，中文名称为图形处理器，主要用于计算机系统中的显示及图形处理，又称为Video Card(显卡)。
 
 GPU具有一下特性：
@@ -14,31 +13,31 @@ GPU具有一下特性：
 - 高度可编程性
 - 桌面级的超级计算机
 
-## 1.2 GPGPU
+## GPGPU
 异构计算（Heterogeneous Computing）是指在异构计算系统上进行的并行计算。  
 GPGPU（General-purpose computing on graphics processing units）是一种利用处理图形任务的图形处理器来计算原本由中央处理器处理的通用计算任务。
 
 {% asset_img "pic01_gpgpu.png" "gpgpu" %}
 
-## 1.3 GPGPU-Sim
+## GPGPU-Sim
 GPGPU-Sim 是一个时钟级别的GPU仿真模型，可以运行使用cuda或者OpenCL编写的GPU计算程序。GPGPU的github如下：
 https://github.com/gpgpu-sim/gpgpu-sim_distribution
 
-# 2. 安装 GPGPU Sim
+# 安装 GPGPU Sim
 本文介绍在虚拟机Centos7上配置安装GPGPU sim环境。  
 需要准备环境：
 - Linux 环境：Centos 7
 - Cuda环境：Cuda Toolkit 7.5 https://developer.nvidia.com/cuda-downloads
 - GPGPU sim：https://github.com/gpgpu-sim/gpgpu-sim_distribution （branch: dev）
 
-## 2.1 安装Cuda
+## 安装Cuda
 GPGPU-Sim支持的Cuda版本有：4.2, 5.0, 5.5, 6.0, 7.5, 8.0, 9.0, 9.1。
 ``` bash
 yum localinstall cuda-repo-rhel7-7.5-18.x86_64.rpm
 yum install cuda-tooklit-7-5
 ```
-## 2.2 编译GPGPU-Sim
-#### 2.2.1 安装依赖库
+## 编译安装GPGPU-Sim
+### 安装依赖库
 安装依赖:
 ```
 # GPGPU-Sim dependencies:
@@ -62,7 +61,7 @@ yum install python2-numpy
 yum install libpng12-devel
 yum install python-matplotlib
 ```
-#### 2.2.2 编译
+### 编译
 编译前需要设置环境变量
 ```
 export CUDA_INSTALL_PATH=/usr/local/cuda
@@ -73,7 +72,7 @@ source setup_environment
 ```
 make -j8
 ```
-## 2.3 运行demo
+## 运行demo
 cuda的helloworld程序如下
 ```
 /* file: hello.cu */
