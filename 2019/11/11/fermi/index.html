@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Fermi架构介绍 | GPU 观察</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="介绍Fermi是NVIDIA公司的GPU架构的名称。取这个名字是为了纪念美籍著名意大利物理学家Erico Fermi。 Erico Fermi造出了人类第一台可控核反应堆—芝加哥一号堆，被称为“原子能之父”，在1938年获得了诺贝尔物理学奖。 NVIDIA声称Fermi架构是世界上第一个完整地支持通用计算的GPU架构。 架构模型  编程模型ApplicationApplication可以包含一个或">
+<meta name="keywords" content="Fermi, GPU">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fermi架构介绍">
+<meta property="og:url" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;11&#x2F;11&#x2F;fermi&#x2F;index.html">
+<meta property="og:site_name" content="GPU 观察">
+<meta property="og:description" content="介绍Fermi是NVIDIA公司的GPU架构的名称。取这个名字是为了纪念美籍著名意大利物理学家Erico Fermi。 Erico Fermi造出了人类第一台可控核反应堆—芝加哥一号堆，被称为“原子能之父”，在1938年获得了诺贝尔物理学奖。 NVIDIA声称Fermi架构是世界上第一个完整地支持通用计算的GPU架构。 架构模型  编程模型ApplicationApplication可以包含一个或">
+<meta property="og:locale" content="cn">
+<meta property="og:image" content="http:&#x2F;&#x2F;img2.expreview.com&#x2F;img&#x2F;review&#x2F;fermi&#x2F;tech&#x2F;f-c-1.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img2.expreview.com&#x2F;img&#x2F;review&#x2F;fermi&#x2F;tech&#x2F;f-sm.png">
+<meta property="og:updated_time" content="2019-11-11T07:19:18.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;img2.expreview.com&#x2F;img&#x2F;review&#x2F;fermi&#x2F;tech&#x2F;f-c-1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">GPU 观察</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://gpu-insight.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-fermi" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/11/fermi/" class="article-date">
+  <time datetime="2019-11-11T00:00:00.000Z" itemprop="datePublished">2019-11-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Fermi架构介绍
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Fermi是NVIDIA公司的GPU架构的名称。取这个名字是为了纪念美籍著名意大利物理学家Erico Fermi。</p>
+<p>Erico Fermi造出了人类第一台可控核反应堆—芝加哥一号堆，被称为“原子能之父”，在1938年获得了诺贝尔物理学奖。</p>
+<p>NVIDIA声称Fermi架构是世界上第一个完整地支持通用计算的GPU架构。</p>
+<h1 id="架构模型"><a href="#架构模型" class="headerlink" title="架构模型"></a>架构模型</h1><p><img src="http://img2.expreview.com/img/review/fermi/tech/f-c-1.png" alt="Fermi结构"></p>
+<p><img src="http://img2.expreview.com/img/review/fermi/tech/f-sm.png" alt="SM结构"></p>
+<h1 id="编程模型"><a href="#编程模型" class="headerlink" title="编程模型"></a>编程模型</h1><h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>Application可以包含一个或多个<a href="#Kernel">Kernel</a>，通常用来做顶点/像素染色或者通用计算。与常见的CPU程序相比，Application的分支跳转语句相对较少；程序长度相对较短；算数运算类语句相对较多。</p>
+<p>Application支持OpenGL、CUDA、OpenCL和Direct Compute API。</p>
+<h2 id="Kernel"><a href="#Kernel" class="headerlink" title="Kernel"></a>Kernel</h2><p>一个<a href="#Grid">Grid</a>执行一个Kernel。这是CUDA和OpenCL中的概念，意指计算算法单元。需要注意的是它和操作系统中的内核不是同一个概念。</p>
+<p>Kernel在C语言的基础上扩展了并行运算的语法，以取代串行的循环等语句。除此之外，它还支持C++、Fortran、Java、MATLAB和Python。</p>
+<h2 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h2><p>Grid可以包含一个或多个<a href="#ThreadBlock">ThreadBlock</a>。与Kernel是一一对应的关系。</p>
+<h2 id="ThreadBlock"><a href="#ThreadBlock" class="headerlink" title="ThreadBlock"></a>ThreadBlock</h2><p>ThreadBlock可以包含最多48个<a href="#Warp">Warp</a>，也就是1536个<a href="线程">线程</a>。一个ThreadBlock里面的所有线程都运行在同一个SM上，他们之间可以协作和共享存储。</p>
+<h2 id="Warp"><a href="#Warp" class="headerlink" title="Warp"></a>Warp</h2><p>一个Warp包含32个<a href="#Thread">Thread</a>，不同ThreadBlock中的Warp可以并行执行。Warp是SM中的基本调度单元。</p>
+<h2 id="Thread"><a href="#Thread" class="headerlink" title="Thread"></a>Thread</h2><p>多个Thread可以并行执行，Fermi采用SIMT（Single Instruction Multiple Threads）架构。Warp可以快速切换，这是因为每个线程都有自己独立的寄存器和私有存储，Warp切换时不需要数据搬运。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://gpu-insight.github.io/2019/11/11/fermi/" data-id="ck2u3jg4f0000yosa2bsf3dv1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi-GPU/" rel="tag">Fermi, GPU</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/10/23/gpgpusim_install/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">GPGPU-Sim 安装过程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi-GPU/" rel="tag">Fermi, GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Fermi-GPU/" style="font-size: 10px;">Fermi, GPU</a> <a href="/tags/GPGPU-Sim/" style="font-size: 10px;">GPGPU-Sim</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/11/fermi/">Fermi架构介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2019/10/23/gpgpusim_install/">GPGPU-Sim 安装过程</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 GPU Insight<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
