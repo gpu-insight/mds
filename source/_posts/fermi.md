@@ -1,7 +1,7 @@
 ---
 title: Fermi架构介绍
 date: 2019-11-11
-tags: Fermi, GPU
+tags: Fermi GPU
 ---
 
 # 介绍
@@ -12,9 +12,9 @@ Erico Fermi造出了人类第一台可控核反应堆---芝加哥一号堆，被
 NVIDIA声称Fermi架构是世界上第一个完整地支持通用计算的GPU架构。
 
 # 架构模型
-![Fermi结构](http://img2.expreview.com/img/review/fermi/tech/f-c-1.png)
-
-![SM结构](http://img2.expreview.com/img/review/fermi/tech/f-sm.png)
+{% asset_img "fermi-0.png" "Fermi结构" %}
+{% asset_img "fermi-1.png" "SM结构" %}
+{% asset_img "fermi-2.png" "SM执行Warp指令" %}
 
 # 编程模型
 ## Application
