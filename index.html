@@ -61,6 +61,72 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-GLSLCompilerPhases" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/13/GLSLCompilerPhases/" class="article-date">
+  <time datetime="2019-11-13T00:00:00.000Z" itemprop="datePublished">2019-11-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/13/GLSLCompilerPhases/">GLSL 编译器处理逻辑</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="GLSL介绍"><a href="#GLSL介绍" class="headerlink" title="GLSL介绍"></a>GLSL介绍</h1><p>GLSL是多种紧密相关的语言，这些语言用于为OpenGL API处理管道中包含的每个可编程处理器创建着色器。包含如下的着色器：</p>
+<ul>
+<li>Vertex</li>
+<li>Tessellation Control</li>
+<li>Tessellation Evalution</li>
+<li>Geometry</li>
+<li>Fragment</li>
+<li>Compute</li>
+</ul>
+<h1 id="编译器处理阶段"><a href="#编译器处理阶段" class="headerlink" title="编译器处理阶段"></a>编译器处理阶段</h1><p>Shader处理器的编译单元在编译的最后阶段可选地链接在一起之前被分别处理。其处理逻辑如下：</p>
+<ol>
+<li>源字符串作为字节序列输入。’\0’被解释为终止符。</li>
+<li>所有源字符串被串联以形成单个输入。’\0’字节被丢弃，所有其他值均保留。</li>
+<li>每个字符串均根据UTF-8标准进行解释，不同之处在于，所有无效字节序列均以其原始形式保留以用于后续处理。</li>
+<li>每个{回车，换行}和{换行，回车}序列都由一个换行符代替。然后，所有剩余的回车符和换行符都将换行。</li>
+<li>每个字符的行号等于前一个换行符的数量加一。请注意，此操作只能随后通过#line指令进行更改，并且不受编译阶段6中删除换行符的影响。</li>
+<li>在换行符之前出现反斜杠（’&#39;）的位置都将被删除。请注意，不会替换任何空格，从而允许单个预处理令牌跨越换行符。此操作不是递归的；不会删除任何新生成的{反斜杠 换行符}序列。</li>
+<li>所有注释均替换为一个空格。注释中允许所有（非零）字符和无效的UTF-8字节序列。 ‘//‘样式注释包括初始的’//‘标记，并一直延续到但不包括终止的换行符。 ‘/…/‘注释同时包含开始和结束标记。</li>
+<li>源字符串将转换为一系列预处理Token。这些Token包括预处理编号，标识符和预处理操作。从Token的第一个字符的行号复制与每个Token关联的行号。</li>
+<li>预处理器运行。执行指令并执行宏扩展。</li>
+<li>空格和换行符将被丢弃。</li>
+<li>预处理Token将转换为Token</li>
+<li>语法根据GLSL ES语法进行分析。</li>
+<li>根据语言的语义规则检查结果。</li>
+<li>可选地，将着色器链接在一起以形成一个或多个程序或可分离的程序。当将一对连续阶段的着色器链接到同一程序时，两个着色器中未使用的任何输出和相应的输入都可能会被丢弃。</li>
+<li>生成二进制文件。</li>
+</ol>
+<p>From：<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.2/GLSL_ES_Specification_3.20.html#logical-phases-of-compilation" target="_blank" rel="noopener">https://www.khronos.org/registry/OpenGL/specs/es/3.2/GLSL_ES_Specification_3.20.html#logical-phases-of-compilation</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://gpu-insight.github.io/2019/11/13/GLSLCompilerPhases/" data-id="ck2wp63vr0000ysn3evbz8vn1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-fermi" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/11/11/fermi/" class="article-date">
@@ -102,7 +168,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/11/11/fermi/" data-id="ck2u4s21a0000xdr08pg8g3uk" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/11/11/fermi/" data-id="ck2wp63w30001ysn33vr8fk7f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi-GPU/" rel="tag">Fermi GPU</a></li></ul>
@@ -173,7 +239,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/10/23/gpgpusim_install/" data-id="ck2u4s21g0001xdr0eqf11l8v" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/10/23/gpgpusim_install/" data-id="ck2wp63w80003ysn3aoljfgt2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
@@ -198,7 +264,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi-GPU/" rel="tag">Fermi GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi-GPU/" rel="tag">Fermi GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
     </div>
   </div>
 
@@ -208,7 +274,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Fermi-GPU/" style="font-size: 10px;">Fermi GPU</a> <a href="/tags/GPGPU-Sim/" style="font-size: 10px;">GPGPU-Sim</a>
+      <a href="/tags/Fermi-GPU/" style="font-size: 10px;">Fermi GPU</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 10px;">GPGPU-Sim</a>
     </div>
   </div>
 
@@ -228,6 +294,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/11/13/GLSLCompilerPhases/">GLSL 编译器处理逻辑</a>
+          </li>
         
           <li>
             <a href="/2019/11/11/fermi/">Fermi架构介绍</a>
