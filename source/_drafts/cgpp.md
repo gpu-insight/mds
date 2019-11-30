@@ -20,20 +20,65 @@ RM advantages: reusable components, retain the scene graph and modify it
 # Human Visual Perception
 The visual system is both tolerant of bad data and sensitive.
 
-## Special properties for visual system compared to other modes of computer-to-human interaction like touch, sound  
-- light is not directionally diffuse
+## components
+- eye
+- optic nerve 视神经
+- visual cortex 视觉皮层
+    * early vision
+    * later regions
+
+## components运作方式
+- 宏观上有一个pipeline结构
+- 但也有很多并行处理，也会从later regions向early vision反馈信息
+
+## well tasks vs. less well tasks
+### well tasks
+- 在任意视角和距离判断大小和方向
+- 识别颜色可以不随光照条件的变化而变化， 例如光暗了，就把黄色看成绿色
+- 识别形状，即使有背景干扰和扭曲
   
-## The visual system
-### measuring the similarity between two images
-sum-squared difference
+## less well tasks
+- 判断绝对亮度
+- 识别平行线
+- 检测相同但没有邻接的颜色
+  
+总而言之，visual system擅长和不擅长的都是进化的结果
 
-our visual system is more sensitive to radiance(辉度) errors
+## Optical illusions
+- **What is obvious is not necessarily true.**
+- **The end result of vision is a construction created by the mind, and not objective reality.**
 
-changes in the intensity tend to matter more than absolute intensity
+## Sum-squared Difference(L^2 difference or L^2 distance, 欧氏距离)
+41 x 41 pixels 
+A image, all pixels value 118
+B image, all pixels value 128
+C image, all pixels value 128, except the center 255
+Distance(A-B) = sqrt(10^2 * 41^2) = 410
+Distance(A-C) = sqrt(10^2 * (41^2 - 1) + (255-118)^2) = 432.16
 
 ### something about our visual system
 1. Our perception of things is fairly independent of lighting.
 2. The early portions of the visual system tend to detect edges and assemble them into something that the brain perceives as a whole.
+
+### Eye
+#### physical characteristics limits of eyes
+- smallest detectable brightness difference
+- smallest angular resolution 
+
+#### Physical
+![](eye.jpg)
+
+Aqueous humor: 房水
+Cornea: 角膜
+Lens: 镜头
+Pupil: 瞳孔
+Iris: 虹膜
+Visual axis: 视轴
+Vitreous humor: 玻璃体
+Retina: 视网膜
+Fovea: 中央凹
+Optic disk: 
+Optic nerve: 视神经
 
 ### the visual system's ability to detect distance to an object through two different mechanisms
 1. 眼睛可以聚焦，双眼同时可以定位物体的深度
