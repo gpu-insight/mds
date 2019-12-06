@@ -71,4 +71,4 @@ within a large page frame, which frees up large page frames for CoCoA.
 问题。反过来说，如果一块物理内存，它所包含的所有base pages都属于同一个虚拟地址空间，那么它们就
 可以被合并为一个large page，而不需要有data migration.
 
-![](mm.jpg)
+![](./mm.jpg)
