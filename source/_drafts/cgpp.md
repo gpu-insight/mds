@@ -66,21 +66,44 @@ Distance(A-C) = sqrt(10^2 * (41^2 - 1) + (255-118)^2) = 432.16
 - smallest angular resolution 
 
 #### Physical
-![](eye.jpg)
 
-Aqueous humor: 房水
-Cornea: 角膜
-Lens: 镜头
-Pupil: 瞳孔
-Iris: 虹膜
-Visual axis: 视轴
-Vitreous humor: 玻璃体
-Retina: 视网膜
-Fovea: 中央凹
-Optic disk: 
-Optic nerve: 视神经
+![](./eye.jpg)
 
-### the visual system's ability to detect distance to an object through two different mechanisms
+- Aqueous humor: 房水
+- Cornea: 角膜
+- Lens: 镜头
+- Pupil: 瞳孔
+- Iris: 虹膜
+- Visual axis: 视轴
+- Vitreous humor: 玻璃体
+- Retina: 视网膜
+- Fovea: 中央凹
+- Optic disk: 视盘 
+- Optic nerve: 视神经
+
+视觉细胞：
+- 杆细胞：微暗光检测
+- 锥细胞：明亮光检测， 分三种，它们结合起来形成颜色视觉
+
+人的视觉系统的对数响应机制：人感知的明亮度跟光的辐射量的对数成正比
+
+
+the visual system's ability to detect distance to an object through two different mechanisms
 1. 眼睛可以聚焦，双眼同时可以定位物体的深度
 - 3D glasses
 2. 眼睛对周围环境的光线的适应性和有限的动态范围，意味着我们不需要构建像素间对比度很大的显示器
+
+
+#### 恒常性
+- 颜色恒常性
+- 形状恒常性
+- 大小恒常性
+- 亮度恒常性
+
+![](./color_constancy.jpg)
+
+
+对于亮度，相对亮度比绝对亮度更重要。
+
+- 延续性
+- 阴影
