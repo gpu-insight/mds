@@ -66,21 +66,64 @@ Distance(A-C) = sqrt(10^2 * (41^2 - 1) + (255-118)^2) = 432.16
 - smallest angular resolution 
 
 #### Physical
-![](eye.jpg)
 
-Aqueous humor: 房水
-Cornea: 角膜
-Lens: 镜头
-Pupil: 瞳孔
-Iris: 虹膜
-Visual axis: 视轴
-Vitreous humor: 玻璃体
-Retina: 视网膜
-Fovea: 中央凹
-Optic disk: 
-Optic nerve: 视神经
+![](./eye.jpg)
 
-### the visual system's ability to detect distance to an object through two different mechanisms
+- Aqueous humor: 房水
+- Cornea: 角膜
+- Lens: 镜头
+- Pupil: 瞳孔
+- Iris: 虹膜
+- Visual axis: 视轴
+- Vitreous humor: 玻璃体
+- Retina: 视网膜
+- Fovea: 中央凹
+- Optic disk: 视盘 
+- Optic nerve: 视神经
+
+视觉细胞：
+- 杆细胞：微暗光检测
+- 锥细胞：明亮光检测， 分三种，它们结合起来形成颜色视觉
+
+人的视觉系统的对数响应机制：人感知的明亮度跟光的辐射量的对数成正比
+
+
+the visual system's ability to detect distance to an object through two different mechanisms
 1. 眼睛可以聚焦，双眼同时可以定位物体的深度
 - 3D glasses
 2. 眼睛对周围环境的光线的适应性和有限的动态范围，意味着我们不需要构建像素间对比度很大的显示器
+
+#### 侧向抑制效应和马赫带效应
+
+对图形学的影响：flat mode, smooth mode
+
+#### 眼睛自适应功能具有**区域局部性**
+
+眼睛可辨识局部区域内大约100:1的亮度差异。
+
+从无灯光的室内透过小窗户向阳光明媚的室外凝视，眼睛可以辨识室内100:1的亮度差异（局部暗光），
+也可以辨识室外100:1的亮度差异（局部亮光）
+
+白天最亮的光照亮度和夜晚最暗的光照亮度之比可超过1,000,000:1
+
+太阳：-26.7
+满月：-12.8
+天狼星：-1.44
+
+极端例子： 一颗3等星和月亮的亮度差大约为1,000,000倍, 为什么当它们在视野内很近的时候，肯定看不到
+3等星？
+
+
+#### 恒常性
+- 颜色恒常性
+- 形状恒常性
+- 大小恒常性
+- 亮度恒常性
+
+![](./color_constancy.jpg)
+
+
+对于亮度，相对亮度比绝对亮度更重要。
+
+- 延续性
+- 阴影
