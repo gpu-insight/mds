@@ -1,7 +1,7 @@
 ---
 title: Fermi架构介绍
 date: 2019-11-11
-tags: Fermi GPU
+tags: [Fermi, GPU]
 ---
 
 # 介绍
