@@ -1,7 +1,7 @@
 ---
 title: GPU性能指标
 date: 2019-12-26
-tags: GPU Performance
+tags: [GPU, Performance]
 ---
 
 通过阅读本文，你将知道GPU的性能指标都有哪些以及他们是如何计算出来的。
