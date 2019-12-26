@@ -61,6 +61,101 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-gpu_performance" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/12/26/gpu_performance/" class="article-date">
+  <time datetime="2019-12-26T00:00:00.000Z" itemprop="datePublished">2019-12-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/12/26/gpu_performance/">GPU性能指标</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>通过阅读本文，你将知道GPU的性能指标都有哪些以及他们是如何计算出来的。</p>
+<h1 id="GPU性能指标"><a href="#GPU性能指标" class="headerlink" title="GPU性能指标"></a>GPU性能指标</h1><p>在GPU信息数据库-GPU Specs Database，可以查找到几乎所有GPU的信息。GPU信息中有一栏代表的是GPU的性能参数：Theoretical Performance。</p>
+<p>通过阅读这一栏数据我们可以知道：</p>
+<ol>
+<li>这些数据都是<strong>理论上的峰值</strong></li>
+<li>性能指标一般有：<strong>纹理填充率</strong>、<strong>像素填充率</strong>和<strong>浮点处理能力</strong></li>
+</ol>
+<h2 id="理论上的峰值"><a href="#理论上的峰值" class="headerlink" title="理论上的峰值"></a>理论上的峰值</h2><p>所谓理论上的峰值可以理解为理想情况下的峰值，GPU在实际运行过程中几乎都跑不出该峰值。</p>
+<p>在得出这个理论上的峰值的过程中，做了很多假设。</p>
+<p><strong>假设一，一个时钟完成一次处理。</strong>如：一个时钟完成一个像素的渲染，实际上一个时钟是完不成一个像素的渲染任务的，反而根据我们写的片段染色程序的复杂度，可能需要上百甚至更多的时钟。</p>
+<p><strong>假设二，数据已准备好。</strong>如：像素渲染的输入数据总是可以立马获取到，实际并非如此。</p>
+<p><strong>假设三，任务调度和逻辑控制不消耗时钟。</strong></p>
+<p>至于这个理论上的峰值是如何计算得来的，请参看下面章节的介绍。</p>
+<h2 id="纹理填充率"><a href="#纹理填充率" class="headerlink" title="纹理填充率"></a>纹理填充率</h2><blockquote>
+<p>纹理填充率 = 纹理单元运行的时钟频率 x 纹理单元的个数 x 每个时钟纹理单元可以处理的纹素个数（理论值）</p>
+</blockquote>
+<p>比如NAVIDA的<a href="https://www.techpowerup.com/gpu-specs/geforce-gt-430.c603" target="_blank" rel="noopener">GeForce GT 430</a>：</p>
+<ul>
+<li>纹理单元运行的时钟频率为：700 MHz</li>
+<li>纹理单元的个数：16个</li>
+<li>每个时钟纹理单元可以处理的纹素个数：1个</li>
+</ul>
+<p>所以它的纹理填充率为11.20 GTexel/s。</p>
+<h2 id="像素填充率"><a href="#像素填充率" class="headerlink" title="像素填充率"></a>像素填充率</h2><blockquote>
+<p>像素填充率 = ROP运行的时钟频率 x ROP的个数 x 每个时钟ROP可以处理的像素个数</p>
+</blockquote>
+<p>比如NAVIDA的<a href="https://www.techpowerup.com/gpu-specs/geforce-gt-430.c603" target="_blank" rel="noopener">GeForce GT 430</a>：</p>
+<ul>
+<li>ROP运行的时钟频率：700 MHz</li>
+<li>ROP的个数：4个</li>
+<li>每个时钟ROP可以处理的像素个数：1个</li>
+</ul>
+<p>所以它的像素填充率为2.800 GPixel/s</p>
+<h2 id="浮点处理能力"><a href="#浮点处理能力" class="headerlink" title="浮点处理能力"></a>浮点处理能力</h2><p>浮点处理包含半精度、单精度和双精度浮点的处理。</p>
+<p>下面以单精度浮点处理能力为例：</p>
+<blockquote>
+<p>单精度浮点处理能力 = 渲染核运行的时钟频率 x 渲染核的个数 x 每个渲染核包含的单精度浮点处理单元的个数</p>
+</blockquote>
+<p>比如NAVIDA的<a href="https://www.techpowerup.com/gpu-specs/geforce-gt-430.c603" target="_blank" rel="noopener">GeForce GT 430</a>：</p>
+<ul>
+<li>渲染核运行的时钟频率：1400 MHz</li>
+<li>渲染核的个数：96个</li>
+<li>每个渲染核包含的单精度浮点处理单元的个数：2个（这个数值是逆推出来的，原网页没有该信息）</li>
+</ul>
+<p>所以它的单精度浮点处理能力为268.8 GFLOPS</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
+<li>GPU的性能指标包含：纹理填充率、像素填充率和浮点处理能力</li>
+<li>纹理填充率的计算方式为：纹理单元运行的时钟频率 x 纹理单元的个数 x 每个时钟纹理单元可以处理的纹素个数（理论值）</li>
+<li>像素填充率的计算方式为：ROP运行的时钟频率 x ROP的个数 x 每个时钟ROP可以处理的像素个数</li>
+<li>单精度浮点处理能力的计算方式为：渲染核运行的时钟频率 x 渲染核的个数 x 每个渲染核包含的单精度浮点处理单元的个数</li>
+<li>GPU性能指标的数值都是理论值</li>
+<li>知道了GPU性能指标的计算方式，我们可以从GPU厂商公布的数据中逆推得到一些有用的信息</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="http://www.gpuzoo.com/" target="_blank" rel="noopener">GPUZoo</a></li>
+<li><a href="https://www.techpowerup.com/gpu-specs/" target="_blank" rel="noopener">GPU Specs Database</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://gpu-insight.github.io/2019/12/26/gpu_performance/" data-id="ck4m4sz7t000b2stze2khhb9i" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU-Performance/" rel="tag">GPU Performance</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-gpu_terms" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/12/23/gpu_terms/" class="article-date">
@@ -98,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/12/23/gpu_terms/" data-id="ck4h9yihf000b2twebb959dlv" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/12/23/gpu_terms/" data-id="ck4m4sz7u000c2stz3tibdmew" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
@@ -185,7 +280,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/12/22/tbr/" data-id="ck4h9yihh000c2twe1fq3dl1z" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/12/22/tbr/" data-id="ck4m4sz7w000f2stzgu8h6ab2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li></ul>
@@ -251,7 +346,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/11/13/GLSLCompilerPhases/" data-id="ck4h9yih500072twe5cyl5nes" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/11/13/GLSLCompilerPhases/" data-id="ck4m4sz7n00072stzeyxe842c" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li></ul>
@@ -304,7 +399,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/11/11/fermi/" data-id="ck4h9yih600082twe5xk447vx" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/11/11/fermi/" data-id="ck4m4sz7p00082stz03o567p1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -375,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/10/23/gpgpusim_install/" data-id="ck4h9yih7000a2twe6i6c7wbd" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/10/23/gpgpusim_install/" data-id="ck4m4sz7r000a2stz3lmh9m9w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
@@ -400,7 +495,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU-Performance/" rel="tag">GPU Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
     </div>
   </div>
 
@@ -410,7 +505,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Fermi/" style="font-size: 10px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 10px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
+      <a href="/tags/Fermi/" style="font-size: 10px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 10px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/GPU-Performance/" style="font-size: 10px;">GPU Performance</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
     </div>
   </div>
 
@@ -432,6 +527,10 @@
       <ul>
         
           <li>
+            <a href="/2019/12/26/gpu_performance/">GPU性能指标</a>
+          </li>
+        
+          <li>
             <a href="/2019/12/23/gpu_terms/">GPU常见概念</a>
           </li>
         
@@ -445,10 +544,6 @@
         
           <li>
             <a href="/2019/11/11/fermi/">Fermi架构介绍</a>
-          </li>
-        
-          <li>
-            <a href="/2019/10/23/gpgpusim_install/">GPGPU-Sim 安装过程</a>
           </li>
         
       </ul>
