@@ -5,17 +5,17 @@
   
 
   
-  <title>GPU常见概念 | GPU 观察</title>
+  <title>GPU的渲染架构、渲染管线和渲染模式分类 | GPU 观察</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="GPU架构设计中经常会看到诸如：统一渲染vs分离式渲染、固定功能vs可编程、立即渲染vs基于TILE的渲染vs基于TILE的延迟渲染等等。 不管GPU架构按照哪种分类方式都离不开三个要素：功耗、性能和面积。我们可以简记为PPA（Power、Performance、Area）。 一个好的GPU架构需要针对GPU产品的应用场景，在PPA组成的三角形中选择一个好的平衡点。比如移动端的GPU更加注重功耗和">
-<meta name="keywords" content="GPU,TBR,统一渲染,分离式渲染,固定功能渲染管线,可编程渲染管线">
+  <meta name="description" content="通过阅读本文你将能够知道：  统一渲染架构和分离式渲染架构是什么以及二者的区别 固定功能渲染管线和可编程渲染管线是什么以及二者的区别 立即渲染模式和基于TILE的渲染模式是什么以及二者的区别  NVIDIA GPU历史简单介绍NVIDIA在1999年推出GeForce 256时，提出了GPU这个概念。 随后NVIDIA陆续推出了GeForce 2系列、GeForce 3系列、GeForce 4系列">
+<meta name="keywords" content="GPU,TBR,IMR,统一渲染,分离式渲染,固定功能渲染管线,可编程渲染管线">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GPU常见概念">
+<meta property="og:title" content="GPU的渲染架构、渲染管线和渲染模式分类">
 <meta property="og:url" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;23&#x2F;gpu_terms&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
-<meta property="og:description" content="GPU架构设计中经常会看到诸如：统一渲染vs分离式渲染、固定功能vs可编程、立即渲染vs基于TILE的渲染vs基于TILE的延迟渲染等等。 不管GPU架构按照哪种分类方式都离不开三个要素：功耗、性能和面积。我们可以简记为PPA（Power、Performance、Area）。 一个好的GPU架构需要针对GPU产品的应用场景，在PPA组成的三角形中选择一个好的平衡点。比如移动端的GPU更加注重功耗和">
+<meta property="og:description" content="通过阅读本文你将能够知道：  统一渲染架构和分离式渲染架构是什么以及二者的区别 固定功能渲染管线和可编程渲染管线是什么以及二者的区别 立即渲染模式和基于TILE的渲染模式是什么以及二者的区别  NVIDIA GPU历史简单介绍NVIDIA在1999年推出GeForce 256时，提出了GPU这个概念。 随后NVIDIA陆续推出了GeForce 2系列、GeForce 3系列、GeForce 4系列">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2019-12-26T06:33:15.784Z">
+<meta property="og:updated_time" content="2019-12-26T09:21:40.657Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
@@ -77,7 +77,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      GPU常见概念
+      GPU的渲染架构、渲染管线和渲染模式分类
     </h1>
   
 
@@ -85,25 +85,55 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>GPU架构设计中经常会看到诸如：统一渲染vs分离式渲染、固定功能vs可编程、立即渲染vs基于TILE的渲染vs基于TILE的延迟渲染等等。</p>
-<p>不管GPU架构按照哪种分类方式都离不开三个要素：功耗、性能和面积。我们可以简记为PPA（Power、Performance、Area）。</p>
-<p>一个好的GPU架构需要针对GPU产品的应用场景，在PPA组成的三角形中选择一个好的平衡点。比如移动端的GPU更加注重功耗和面积，而桌面端的GPU更加注重性能。</p>
-<p>很早的GPU都采用固定功能的渲染管线。比如想要完成顶点渲染，那么你选择一个顶点光照算法，如Phong，然后使用硬件实现该算法。所谓固定，一旦你选择了Phong光照算法，那你的GPU就只支持这个算法，即使出现了一个更好的光照算法，你也无法更新。</p>
-<p>于是，可编程渲染管线出现了。顶点着色和片段着色是可编程的，着色程序都运行在一个微处理器上。我们暂且称这个微处理器为Shader Core。</p>
-<p>由于顶点着色程序对精度要求较高，而片段着色程序要求较低，并且一般情况下，少量的顶点会生成大量的片段，所以GPU设计者设计了两类Shader Core：一类专门处理顶点着色程序，称为顶点着色器；另一类专门处理片段着色程序，称为片段着色器。并且顶点着色器的数量少于片段着色器的数量。这便是分离式渲染：顶点着色和片段着色在各自专门的硬件单元中进行。</p>
+        <p>通过阅读本文你将能够知道：</p>
+<ol>
+<li>统一渲染架构和分离式渲染架构是什么以及二者的区别</li>
+<li>固定功能渲染管线和可编程渲染管线是什么以及二者的区别</li>
+<li>立即渲染模式和基于TILE的渲染模式是什么以及二者的区别</li>
+</ol>
+<h1 id="NVIDIA-GPU历史简单介绍"><a href="#NVIDIA-GPU历史简单介绍" class="headerlink" title="NVIDIA GPU历史简单介绍"></a>NVIDIA GPU历史简单介绍</h1><p>NVIDIA在1999年推出GeForce 256时，提出了GPU这个概念。</p>
+<p>随后NVIDIA陆续推出了GeForce 2系列、GeForce 3系列、GeForce 4系列、GeForce 5系列、GeForce 6系列、GeForce 7系列和GeForce 8系列的GPU。</p>
+<p>在推出GeForce 3系列GPU时，NVIDIA采用了可编程的渲染管线。此前的GPU都是固定功能的渲染管线。</p>
+<p>在推出GeForce 8系列GPU时，NVIDIA采用了统一渲染架构。此前的GPU都是分离式渲染架构。</p>
+<p>也是在推出GeForce 8系列GPU时，NVIDIA开始给GPU的架构命名。架构名都是以在科学发展历史中做出过突出贡献的人的名字来命名。GeForce 8系列的架构名称为<a href="https://en.wikipedia.org/wiki/Tesla_(microarchitecture)" target="_blank" rel="noopener">Tesla</a>，这是NVIDIA第一个采用统一渲染的架构。</p>
+<p>随后NVIDIA又陆续推出了<a href="https://en.wikipedia.org/wiki/Fermi_(microarchitecture)" target="_blank" rel="noopener" title="Fermi (microarchitecture)">Fermi</a>、<a href="https://en.wikipedia.org/wiki/Kepler_(microarchitecture)" target="_blank" rel="noopener" title="Kepler (microarchitecture)">Kepler</a>、<a href="https://en.wikipedia.org/wiki/Maxwell_(microarchitecture)" target="_blank" rel="noopener" title="Maxwell (microarchitecture)">Maxwell</a>、<a href="https://en.wikipedia.org/wiki/Pascal_(microarchitecture)" target="_blank" rel="noopener" title="Pascal (microarchitecture)">Pascal</a>、<a href="https://en.wikipedia.org/wiki/Volta_(microarchitecture)" target="_blank" rel="noopener" title="Volta (microarchitecture)">Volta</a>、<a href="https://en.wikipedia.org/wiki/Turing_(microarchitecture)" target="_blank" rel="noopener" title="Turing (microarchitecture)">Turing</a>等架构。</p>
+<p>Fermi架构是NVIDIA第一个支持通用计算的架构。</p>
+<p>在上面的介绍中出现了一些概念：可编程渲染管线、固定功能渲染管线、统一渲染架构、分离式渲染架构，在下面的章节中将详细介绍这些概念。这里提出来是为了让大家看到这些概念出现的时间顺序：</p>
+<ol>
+<li>固定功能渲染管线</li>
+<li>可编程渲染管线</li>
+<li>分离式渲染架构</li>
+<li>统一渲染架构</li>
+</ol>
+<h1 id="固定功能渲染管线和可编程渲染管线"><a href="#固定功能渲染管线和可编程渲染管线" class="headerlink" title="固定功能渲染管线和可编程渲染管线"></a>固定功能渲染管线和可编程渲染管线</h1><p>一开始，GPU设计者想要完成顶点渲染这个功能，那么他会选择一个顶点光照算法，如Phong，然后使用硬件实现该算法。这样做的好处很明显：速度快。但一旦你选择了Phong光照算法，那么这个GPU就只支持这个算法，因为GPU的硬件已经固定死了。即使出现了一个更好的光照算法，你也无法更新。这个时候的GPU几乎所有的算法都是硬件加速实现，更准确地说，是把硬件加速的图形算法单元整合在一起组成一个GPU。</p>
+<p>然后，可编程渲染管线应运而生。顶点着色和片段着色是可编程的，着色程序都运行在一个微处理器上。通常，这个微处理器被称为Shader Core。用户可以通过编写不同的染色程序自定义图形渲染的效果，这是一件令人兴奋的事情！</p>
+<h1 id="分离式渲染架构和统一渲染架构"><a href="#分离式渲染架构和统一渲染架构" class="headerlink" title="分离式渲染架构和统一渲染架构"></a>分离式渲染架构和统一渲染架构</h1><p>由于顶点着色程序对精度要求较高，而片段着色程序要求较低，并且一般情况下，少量的顶点会生成大量的片段，所以GPU设计者设计了两类Shader Core：一类专门处理顶点着色程序，称为顶点着色器；另一类专门处理片段着色程序，称为片段着色器。并且顶点着色器的数量少于片段着色器的数量。这便是分离式渲染：顶点着色和片段着色在各自专门的硬件单元中进行。</p>
 <p>慢慢地会发现，处理小三角形比较多的场景时，顶点着色器利用率很高，而部分片段着色器空闲；处理大三角形比较多的场景或者渲染纹理较多的场景时，顶点着色器部分空闲，而片段着色器利用率很高。</p>
-<p>那是不是可以设计一个Shader Core，它既可以做顶点着色，也可以做片段着色？答案是肯定的。</p>
-<p>统一渲染由此诞生。</p>
-<p>分离式渲染架构的GPU一般都采用IMR，TBR和TBDR是在统一渲染架构的GPU上衍生出来的。</p>
-<p>IMR、TBR和TBDR的介绍请参看<a href="https://www.gpuinsight.com/2019/12/22/tbr/" target="_blank" rel="noopener">《基于TILE的渲染》</a>。</p>
+<p>那是不是可以设计一个Shader Core，它既可以做顶点着色，也可以做片段着色以提高硬件资源的利用率？答案是肯定的。</p>
+<p>统一渲染由此诞生！</p>
+<p>基于统一渲染架构，Shader Core被挖掘出了更多的使用方法，比如通用计算。如果GPU被用来做通用计算，那么GPU中的图形算法硬件加速器（比如光栅化）是不工作的。</p>
+<h1 id="立即渲染模式和基于TILE的渲染模式"><a href="#立即渲染模式和基于TILE的渲染模式" class="headerlink" title="立即渲染模式和基于TILE的渲染模式"></a>立即渲染模式和基于TILE的渲染模式</h1><p>芯片架构通常要考虑三个核心要素：功耗、性能和面积。我们可以简记为PPA（Power、Performance、Area）</p>
+<p>一个好的GPU架构需要针对GPU产品的应用场景，在PPA组成的三角形中选择一个好的平衡点。比如移动端的GPU更加注重功耗和面积，而桌面端的GPU更加注重性能。</p>
+<p>立即渲染模式的GPU侧重于性能，而基于TILE的渲染模式的GPU侧重于功耗。因此，前者常见于桌面级GPU，而后者常见于移动端GPU。</p>
+<p>二者的详细介绍，请参看我的另一篇博客《基于TILE的渲染》。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
+<li>如果顶点/片段着色算法是使用固定的硬件加速器实现，那么该GPU采用的就是固定功能的渲染管线；如果顶点/片段着色算法是可编程替换的，那么该GPU采用的就是可编程的渲染管线。</li>
+<li>如果GPU中存在两种类型的Shader Core，一种只能运行顶点着色程序，另一种只能运行片段着色程序，那么该GPU就是分离式渲染架构；如果GPU中的所有Shader Core既可以运行顶点着色程序，也可以运行片段着色程序，那么该GPU就是统一渲染架构。</li>
+<li>如果GPU渲染逻辑中，顶层遍历元素是图元，那么该GPU采用的是立即渲染模式；如果GPU渲染逻辑中，顶层遍历元素是TILE，那么该GPU采用的是基于TILE的渲染模式。</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://en.wikipedia.org/wiki/Unified_shader_model" target="_blank" rel="noopener">Unified Shader Model</a></li>
+<li><a href="https://www.imgtec.com/blog/a-look-at-the-powervr-graphics-architecture-tile-based-rendering/" target="_blank" rel="noopener">A look at the PowerVR graphics architecture: Tile-based rendering</a></li>
+<li><a href="https://community.arm.com/developer/tools-software/graphics/b/blog/posts/the-mali-gpu-an-abstract-machine-part-2---tile-based-rendering" target="_blank" rel="noopener">The Mali GPU: An Abstract Machine, Part 2 - Tile-based Rendering</a></li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/12/23/gpu_terms/" data-id="ck4mcph8c000cyvkp0oci7v6l" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/12/23/gpu_terms/" data-id="ck4miq2g6000cyete03ipcc9s" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
 
     </footer>
   </div>
@@ -142,7 +172,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
     </div>
   </div>
 
@@ -152,7 +182,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Fermi/" style="font-size: 10px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 10px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
+      <a href="/tags/Fermi/" style="font-size: 10px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 10px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/IMR/" style="font-size: 10px;">IMR</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
     </div>
   </div>
 
@@ -178,7 +208,7 @@
           </li>
         
           <li>
-            <a href="/2019/12/23/gpu_terms/">GPU常见概念</a>
+            <a href="/2019/12/23/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
           </li>
         
           <li>
