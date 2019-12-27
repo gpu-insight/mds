@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="GPU 观察">
 <meta property="og:description" content="通过阅读本文，你将知道GPU的性能指标都有哪些以及他们是如何计算出来的。 GPU性能指标在GPU信息数据库-GPU Specs Database，可以查找到几乎所有GPU的信息。GPU信息中有一栏代表的是GPU的性能参数：Theoretical Performance。 通过阅读这一栏数据我们可以知道：  这些数据都是理论上的峰值 性能指标一般有：纹理填充率、像素填充率和浮点处理能力  理论上的峰">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2019-12-27T01:14:41.107Z">
+<meta property="og:updated_time" content="2019-12-27T02:57:47.960Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
@@ -130,6 +130,7 @@
 <li>每个渲染核包含的单精度浮点处理单元的个数：2个（这个数值是逆推出来的，原网页没有该信息）</li>
 </ul>
 <p>所以它的单精度浮点处理能力为268.8 GFLOPS</p>
+<p>注意：每个渲染核包含的单精度浮点处理单元的个数是逆推出来的。在本例中逆推出来是2，实际上还有可能是1，因为如果该单精度浮点处理单元支持乘加操作的话，一个浮点乘法和一个浮点加法，是两个浮点操作。</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
 <li>GPU的性能指标包含：纹理填充率、像素填充率和浮点处理能力</li>
 <li>纹理填充率的计算方式为：纹理单元运行的时钟频率 x 纹理单元的个数 x 每个时钟纹理单元可以处理的纹素个数（理论值）</li>
@@ -146,7 +147,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/12/26/gpu_performance/" data-id="ck4ngrn1o000b19rc4bgj3yxg" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/12/26/gpu_performance/" data-id="ck4nkg9gb000b0nl7dt1rh9jq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li></ul>
