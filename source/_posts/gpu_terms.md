@@ -21,7 +21,7 @@ NVIDIA在1999年推出GeForce 256时，提出了GPU这个概念。
 
 也是在推出GeForce 8系列GPU时，NVIDIA开始给GPU的架构命名。架构名都是以在科学发展历史中做出过突出贡献的人的名字来命名。GeForce 8系列的架构名称为[Tesla](https://en.wikipedia.org/wiki/Tesla_(microarchitecture))，这是NVIDIA第一个采用统一渲染的架构。
 
-随后NVIDIA又陆续推出了[Fermi](https://en.wikipedia.org/wiki/Fermi_(microarchitecture) "Fermi (microarchitecture)")、[Kepler](https://en.wikipedia.org/wiki/Kepler_(microarchitecture) "Kepler (microarchitecture)")、[Maxwell](https://en.wikipedia.org/wiki/Maxwell_(microarchitecture) "Maxwell (microarchitecture)")、[Pascal](https://en.wikipedia.org/wiki/Pascal_(microarchitecture) "Pascal (microarchitecture)")、[Volta](https://en.wikipedia.org/wiki/Volta_(microarchitecture) "Volta (microarchitecture)")、[Turing](https://en.wikipedia.org/wiki/Turing_(microarchitecture) "Turing (microarchitecture)")等架构。
+随后NVIDIA又陆续推出了[Fermi](https://en.wikipedia.org/wiki/Fermi_(microarchitecture) "Fermi (microarchitecture)")、[Kepler](https://en.wikipedia.org/wiki/Kepler_(microarchitecture) "Kepler (microarchitecture)")、[Maxwell](https://en.wikipedia.org/wiki/Maxwell_(microarchitecture) "Maxwell (microarchitecture)")、[Pascal](https://en.wikipedia.org/wiki/Pascal_(microarchitecture) "Pascal (microarchitecture)")、[Volta](https://en.wikipedia.org/wiki/Volta_(microarchitecture) "Volta (microarchitecture)")、[Turing](https://en.wikipedia.org/wiki/Turing_(microarchitecture) "Turing (microarchitecture)")、Ampere等架构。
 
 Fermi架构是NVIDIA第一个支持通用计算的架构。
 
