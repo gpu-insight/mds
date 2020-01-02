@@ -14,8 +14,7 @@ tags: [图形渲染管线]
 
 图形渲染过程可以类比于给模特拍照的过程。
 
-![Lina](https://upload-images.jianshu.io/upload_images/1293315-2d82864757d6c028.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
+{% asset_img "1.jpg" "Lina" %}
 
 首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数（角度，曝光度等）。最后按下快门，经过打印之后一张图片就生成了。
 
@@ -65,7 +64,7 @@ tags: [图形渲染管线]
 
 帧缓冲区中的图像像素会由显示控制器以固有的频率读到显示器上进行显示。
 
-![计算机图形渲染管线的输入和输出](https://upload-images.jianshu.io/upload_images/1293315-d8670b20d3e39a8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "2.png" "计算机图形渲染管线的输入和输出"%}
 
 计算机图形渲染分为实时渲染和非实时渲染。所谓实时，即快速响应。通常游戏画面的渲染都是实时渲染，计算机制作的电影画面的渲染都是非实时渲染。一个大型游戏的任何时刻截一张图都非常清晰，而电影画面中的高速运动物体的截图则是模糊的。
 
@@ -73,7 +72,7 @@ tags: [图形渲染管线]
 
 # OpenGL渲染管线
 
-渲染管线可分为可编程渲染管线和固定功能渲染管线。详细介绍请参看[《GPU的渲染架构、渲染管线和渲染模式分类》]([https://www.jianshu.com/p/08fab2c70d0a](https://www.jianshu.com/p/08fab2c70d0a)
+渲染管线可分为可编程渲染管线和固定功能渲染管线。详细介绍请参看《GPU的渲染架构、渲染管线和渲染模式分类》
 )
 
 关于`OpenGL渲染管线`，我们可以在各种地方看到这个关键词：计算机图形学、OpenGL官方网站、各大GPU厂商的官网等等。你会发现他们说的都不太一样。
@@ -82,11 +81,11 @@ tags: [图形渲染管线]
 
 OpenGL最初的内部流程是一组有序的处理步骤，这些步骤被组织为一个双通道的渲染流水线。流水线阶段当然是固定的---也就是说，它们无论接受到什么样的输入数据都会执行特定的操作---因此，这样的工作方式成为固定功能的OpenGL流水线。
 
-![计算机图形学视角下的OpenGL固定功能渲染管线](https://upload-images.jianshu.io/upload_images/1293315-d1a726141c4cf19a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "3.png" "计算机图形学视角下的OpenGL固定功能渲染管线" %}
 
 图中，黑色方框部分一般称为**几何流水线**，Geometry Pipeline；橘色方框部分一般称为**像素流水线**，Pixel Pipeline。
 
-![计算机图形学视角下的OpenGL可编程渲染管线](https://upload-images.jianshu.io/upload_images/1293315-dc6b1881319df7d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "4.png" "计算机图形学视角下的OpenGL可编程渲染管线" %}
 
 图中，绿色方框部分是可编程的。应用程序通过使用Shader来控制这些阶段内所进行的操作。Shader指的是一些比较短的程序段，它们被加载到OpenGL程序中，并最终加入到OpenGL流水线的适当的处理单元中，替换掉流水线中原来的固定功能。
 
@@ -105,7 +104,7 @@ OpenGL最初的内部流程是一组有序的处理步骤，这些步骤被组�
 * 规范化设备坐标系。指定为一个设备无关的坐标系
 * 设备坐标系。将最终的图形显示到什么样的设备上
 
-![坐标变换](https://upload-images.jianshu.io/upload_images/1293315-b04bebdeb760b7c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "5.png" "坐标变换" %}
 
 ### OpenGL渲染管线
 OpenGL官方WIKI上将渲染管线分为7个步骤，分别为：
@@ -117,9 +116,9 @@ OpenGL官方WIKI上将渲染管线分为7个步骤，分别为：
 1. Fragment Shader：片段着色
 1. Per-Sample Processing ：逐样本处理
 
-![OpenGL渲染管线](https://upload-images.jianshu.io/upload_images/1293315-4e23e899151995ca.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "6.png" "OpenGL渲染管线" %}
 
-![OpenGL渲染管线](https://upload-images.jianshu.io/upload_images/1293315-55c04974720490ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "7.png" "OpenGL渲染管线" %}
 
 ## GPU设计厂商视角看OpenGL渲染管线
 
@@ -159,7 +158,7 @@ Frame Terminator通常是:
 
 ### GPU硬件渲染管线
 
-![GeForce6800](https://upload-images.jianshu.io/upload_images/1293315-c2f48f49da4533bc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "8.png" "GeForce6800" %}
 
 上图是GeForce6800的硬件架构图。其处理流程为：从主机接收到驱动程序发送的指令和数据，先进行顶点着色。然后着色后的顶点进行图元装配，再对图元进行背面消隐、剪裁和光栅化。光栅化产生的片段送到片段着色器进行片段着色，此过程中有可能会用到纹理。着色后的片段再送到ROP单元进行深度模板测试、混合等操作，最后将像素写回帧缓冲区。
 
