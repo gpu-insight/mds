@@ -8,7 +8,7 @@ tags: [CPU, GPU]
 
 # 结构
 
-![CPU与GPU的结构.png](https://upload-images.jianshu.io/upload_images/1293315-288a7881a2658b58.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+{% asset_img "1.png" "CPU与GPU的结构" %}
 
 上图是CPU和GPU的结构对比图。通过对比可以看出：
 1. CPU的计算单元较复杂，但是个数较少；GPU的计算单元相对简单，但是个数很多
