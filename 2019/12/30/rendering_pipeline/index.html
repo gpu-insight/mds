@@ -7,25 +7,25 @@
   
   <title>图形渲染管线 | GPU 观察</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="通过阅读本文，你将知道：  图形渲染的基本过程是怎样的？ 计算机图形学视角下的图形渲染管线是怎样的？ OpenGL视角下的图形渲染管线是怎样的？ GPU芯片设计者视角下的图形渲染管线是怎样的？  图形渲染过程图形渲染过程可以类比于给模特拍照的过程。  首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数（">
+  <meta name="description" content="通过阅读本文，你将知道：  图形渲染的基本过程是怎样的？ 计算机图形学视角下的图形渲染管线是怎样的？ OpenGL视角下的图形渲染管线是怎样的？ GPU芯片设计者视角下的图形渲染管线是怎样的？  图形渲染过程图形渲染过程可以类比于给模特拍照的过程。   首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数">
 <meta name="keywords" content="图形渲染管线">
 <meta property="og:type" content="article">
 <meta property="og:title" content="图形渲染管线">
 <meta property="og:url" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
-<meta property="og:description" content="通过阅读本文，你将知道：  图形渲染的基本过程是怎样的？ 计算机图形学视角下的图形渲染管线是怎样的？ OpenGL视角下的图形渲染管线是怎样的？ GPU芯片设计者视角下的图形渲染管线是怎样的？  图形渲染过程图形渲染过程可以类比于给模特拍照的过程。  首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数（">
+<meta property="og:description" content="通过阅读本文，你将知道：  图形渲染的基本过程是怎样的？ 计算机图形学视角下的图形渲染管线是怎样的？ OpenGL视角下的图形渲染管线是怎样的？ GPU芯片设计者视角下的图形渲染管线是怎样的？  图形渲染过程图形渲染过程可以类比于给模特拍照的过程。   首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-2d82864757d6c028.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-d8670b20d3e39a8b.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-d1a726141c4cf19a.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-dc6b1881319df7d9.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-b04bebdeb760b7c4.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-4e23e899151995ca.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-55c04974720490ef.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-c2f48f49da4533bc.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
-<meta property="og:updated_time" content="2020-01-01T04:35:28.001Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;8.png">
+<meta property="og:updated_time" content="2020-01-02T07:23:36.024Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;upload-images.jianshu.io&#x2F;upload_images&#x2F;1293315-2d82864757d6c028.png?imageMogr2&#x2F;auto-orient&#x2F;strip%7CimageView2&#x2F;2&#x2F;w&#x2F;1240">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;1.jpg">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
   
@@ -102,7 +102,8 @@
 <li>GPU芯片设计者视角下的图形渲染管线是怎样的？</li>
 </ol>
 <h1 id="图形渲染过程"><a href="#图形渲染过程" class="headerlink" title="图形渲染过程"></a>图形渲染过程</h1><p>图形渲染过程可以类比于给模特拍照的过程。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1293315-2d82864757d6c028.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Lina"></p>
+<img src="/2019/12/30/rendering_pipeline/1.jpg" class="" title="Lina">
+
 <p>首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数（角度，曝光度等）。最后按下快门，经过打印之后一张图片就生成了。</p>
 <p>总结下一张图片的生成过程，大致可以分为四步，分别为：</p>
 <ol>
@@ -132,15 +133,18 @@
 <p>纹理是最常用的优化措施。例如渲染一个游戏场景中的一棵树，与其使用成千上万个顶点构建这颗树的模型，不如直接使用一张纹理图片来代替。这样做可以极大的提高渲染效率。</p>
 <p>从上述可知，计算机图形渲染的输入有两类，分别为：顶点输入和像素输入；计算机图形渲染的输出为：帧缓冲区中的图像。</p>
 <p>帧缓冲区中的图像像素会由显示控制器以固有的频率读到显示器上进行显示。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1293315-d8670b20d3e39a8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="计算机图形渲染管线的输入和输出"></p>
+<img src="/2019/12/30/rendering_pipeline/2.png" class="" title="计算机图形渲染管线的输入和输出">
+
 <p>计算机图形渲染分为实时渲染和非实时渲染。所谓实时，即快速响应。通常游戏画面的渲染都是实时渲染，计算机制作的电影画面的渲染都是非实时渲染。一个大型游戏的任何时刻截一张图都非常清晰，而电影画面中的高速运动物体的截图则是模糊的。</p>
 <p>计算机图形学中并没有明确地定义图形渲染管线，其更多的是研究如何使用计算机更快更好的渲染图形，多偏向于算法方向。图形渲染管线将在后续章节以OpenGL为例进行讲解。</p>
-<h1 id="OpenGL渲染管线"><a href="#OpenGL渲染管线" class="headerlink" title="OpenGL渲染管线"></a>OpenGL渲染管线</h1><p>渲染管线可分为可编程渲染管线和固定功能渲染管线。详细介绍请参看<a href="[https://www.jianshu.com/p/08fab2c70d0a](https://www.jianshu.com/p/08fab2c70d0a)">《GPU的渲染架构、渲染管线和渲染模式分类》</a></p>
+<h1 id="OpenGL渲染管线"><a href="#OpenGL渲染管线" class="headerlink" title="OpenGL渲染管线"></a>OpenGL渲染管线</h1><p>渲染管线可分为可编程渲染管线和固定功能渲染管线。详细介绍请参看《GPU的渲染架构、渲染管线和渲染模式分类》<br>)</p>
 <p>关于<code>OpenGL渲染管线</code>，我们可以在各种地方看到这个关键词：计算机图形学、OpenGL官方网站、各大GPU厂商的官网等等。你会发现他们说的都不太一样。</p>
 <h2 id="计算机图形学视角看OpenGL渲染管线"><a href="#计算机图形学视角看OpenGL渲染管线" class="headerlink" title="计算机图形学视角看OpenGL渲染管线"></a>计算机图形学视角看OpenGL渲染管线</h2><p>OpenGL最初的内部流程是一组有序的处理步骤，这些步骤被组织为一个双通道的渲染流水线。流水线阶段当然是固定的—也就是说，它们无论接受到什么样的输入数据都会执行特定的操作—因此，这样的工作方式成为固定功能的OpenGL流水线。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1293315-d1a726141c4cf19a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="计算机图形学视角下的OpenGL固定功能渲染管线"></p>
+<img src="/2019/12/30/rendering_pipeline/3.png" class="" title="计算机图形学视角下的OpenGL固定功能渲染管线">
+
 <p>图中，黑色方框部分一般称为<strong>几何流水线</strong>，Geometry Pipeline；橘色方框部分一般称为<strong>像素流水线</strong>，Pixel Pipeline。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1293315-dc6b1881319df7d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="计算机图形学视角下的OpenGL可编程渲染管线"></p>
+<img src="/2019/12/30/rendering_pipeline/4.png" class="" title="计算机图形学视角下的OpenGL可编程渲染管线">
+
 <p>图中，绿色方框部分是可编程的。应用程序通过使用Shader来控制这些阶段内所进行的操作。Shader指的是一些比较短的程序段，它们被加载到OpenGL程序中，并最终加入到OpenGL流水线的适当的处理单元中，替换掉流水线中原来的固定功能。</p>
 <h2 id="程序员视角看OpenGL渲染管线"><a href="#程序员视角看OpenGL渲染管线" class="headerlink" title="程序员视角看OpenGL渲染管线"></a>程序员视角看OpenGL渲染管线</h2><p>使用OpenGL编写应用程序或渲染引擎的程序员所面对的是OpenGL标准API。</p>
 <p>在介绍OpenGL标准API展示的渲染管线之前，我们先了解一下OpenGL中的坐标表示。</p>
@@ -152,7 +156,8 @@
 <li>规范化设备坐标系。指定为一个设备无关的坐标系</li>
 <li>设备坐标系。将最终的图形显示到什么样的设备上</li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/1293315-b04bebdeb760b7c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="坐标变换"></p>
+<img src="/2019/12/30/rendering_pipeline/5.png" class="" title="坐标变换">
+
 <h3 id="OpenGL渲染管线-1"><a href="#OpenGL渲染管线-1" class="headerlink" title="OpenGL渲染管线"></a>OpenGL渲染管线</h3><p>OpenGL官方WIKI上将渲染管线分为7个步骤，分别为：</p>
 <ol>
 <li>Vertex Specification：指定顶点数据</li>
@@ -163,8 +168,10 @@
 <li>Fragment Shader：片段着色</li>
 <li>Per-Sample Processing ：逐样本处理</li>
 </ol>
-<p><img src="https://upload-images.jianshu.io/upload_images/1293315-4e23e899151995ca.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="OpenGL渲染管线"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1293315-55c04974720490ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="OpenGL渲染管线"></p>
+<img src="/2019/12/30/rendering_pipeline/6.png" class="" title="OpenGL渲染管线">
+
+<img src="/2019/12/30/rendering_pipeline/7.png" class="" title="OpenGL渲染管线">
+
 <h2 id="GPU设计厂商视角看OpenGL渲染管线"><a href="#GPU设计厂商视角看OpenGL渲染管线" class="headerlink" title="GPU设计厂商视角看OpenGL渲染管线"></a>GPU设计厂商视角看OpenGL渲染管线</h2><p>和程序员一样，GPU设计厂商面对的也是OpenGL标准API，不同的是，前者是如何使用它们，后者是如何实现它们。</p>
 <p>在考虑如何实现他们之前，得先考虑该GPU是应用在什么场景。桌面端的GPU更注重性能，而功耗和面积则非重点考虑因素；移动端的GPU更注重功耗和面积，性能相较于桌面端的GPU则不那么高…</p>
 <p>总而言之，GPU设计者需要根据应用场景在功耗、性能和面积组成的三角形中选择一个“完美”的点作为“质心”。</p>
@@ -194,7 +201,8 @@
 <li>cl_gremedy_computation_frame</li>
 </ol>
 <p>上述的“特定处理”，不同的GPU是完全不一样的。但他们的核心目的都是将OpenGL API转换成GPU硬件认识的，可以让GPU硬件高效工作的指令和数据。</p>
-<h3 id="GPU硬件渲染管线"><a href="#GPU硬件渲染管线" class="headerlink" title="GPU硬件渲染管线"></a>GPU硬件渲染管线</h3><p><img src="https://upload-images.jianshu.io/upload_images/1293315-c2f48f49da4533bc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="GeForce6800"></p>
+<h3 id="GPU硬件渲染管线"><a href="#GPU硬件渲染管线" class="headerlink" title="GPU硬件渲染管线"></a>GPU硬件渲染管线</h3><img src="/2019/12/30/rendering_pipeline/8.png" class="" title="GeForce6800">
+
 <p>上图是GeForce6800的硬件架构图。其处理流程为：从主机接收到驱动程序发送的指令和数据，先进行顶点着色。然后着色后的顶点进行图元装配，再对图元进行背面消隐、剪裁和光栅化。光栅化产生的片段送到片段着色器进行片段着色，此过程中有可能会用到纹理。着色后的片段再送到ROP单元进行深度模板测试、混合等操作，最后将像素写回帧缓冲区。</p>
 <p>上述过程看着和OpenGL官网描述的渲染管线挺像的。其实不然。上图中“ZCull”模块可以提前进行深度模板测试。</p>
 <p>理论上，我们甚至可以在OpenGL API和GPU硬件之间再做一层封装，使得GPU硬件和OpenGL描述的渲染管线的逻辑模型的关联很小。随着GPU架构的发展，GPU硬件和OpenGL描述的渲染管线的逻辑模型的关联也确实越来越小。</p>
@@ -217,7 +225,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/12/30/rendering_pipeline/" data-id="ck4ut53x5001azel16tq9hvlv" class="article-share-link">Share</a>
+      <a data-url="https://gpu-insight.github.io/2019/12/30/rendering_pipeline/" data-id="ck4wel66t001a1li5ff2kazfy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li></ul>
