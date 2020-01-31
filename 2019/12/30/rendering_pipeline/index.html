@@ -11,21 +11,21 @@
 <meta name="keywords" content="图形渲染管线">
 <meta property="og:type" content="article">
 <meta property="og:title" content="图形渲染管线">
-<meta property="og:url" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
 <meta property="og:description" content="通过阅读本文，你将知道：  图形渲染的基本过程是怎样的？ 计算机图形学视角下的图形渲染管线是怎样的？ OpenGL视角下的图形渲染管线是怎样的？ GPU芯片设计者视角下的图形渲染管线是怎样的？  图形渲染过程图形渲染过程可以类比于给模特拍照的过程。   首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;1.jpg">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;2.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;3.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;4.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;5.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;6.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;7.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;8.png">
-<meta property="og:updated_time" content="2020-01-02T07:27:34.890Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;1.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;2.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;3.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;4.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;5.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;6.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;7.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;8.png">
+<meta property="og:updated_time" content="2020-01-31T03:15:37.864Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;gpu-insight.github.io&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;1.jpg">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;30&#x2F;rendering_pipeline&#x2F;1.jpg">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
   
@@ -66,7 +66,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://gpu-insight.github.io"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://gpuinsight.com"></form>
       </div>
     </div>
   </div>
@@ -225,7 +225,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpu-insight.github.io/2019/12/30/rendering_pipeline/" data-id="ck4weqarw001a2cv9et9t0lva" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/2019/12/30/rendering_pipeline/" data-id="ck61li3dg001b1ernauas9trz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li></ul>
