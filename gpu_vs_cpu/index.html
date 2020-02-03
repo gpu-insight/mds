@@ -5,18 +5,20 @@
   
 
   
-  <title>GLSL 编译器处理逻辑 | GPU 观察</title>
+  <title>CPU和GPU的区别 | GPU 观察</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="GLSL介绍GLSL是多种紧密相关的语言，这些语言用于为OpenGL API处理管道中包含的每个可编程处理器创建着色器。包含如下的着色器：  Vertex Tessellation Control Tessellation Evalution Geometry Fragment Compute  编译器处理阶段Shader处理器的编译单元在编译的最后阶段可选地链接在一起之前被分别处理。其处理逻辑如">
-<meta name="keywords" content="GLSL">
+  <meta name="description" content="通过阅读本文你可以知道CPU和GPU的区别是什么。 结构  上图是CPU和GPU的结构对比图。通过对比可以看出：  CPU的计算单元较复杂，但是个数较少；GPU的计算单元相对简单，但是个数很多 CPU的控制单元较复杂；GPU的控制单元相对简单，分布在各计算核 CPU的片上缓存较大；GPU的片上缓存较小，分布在各计算核  为何他们的结构会差别这么大？这还得从他们的设计目标说起。 设计我们知道，GPU">
+<meta name="keywords" content="GPU,CPU">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GLSL 编译器处理逻辑">
-<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;11&#x2F;13&#x2F;GLSLCompilerPhases&#x2F;index.html">
+<meta property="og:title" content="CPU和GPU的区别">
+<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_vs_cpu&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
-<meta property="og:description" content="GLSL介绍GLSL是多种紧密相关的语言，这些语言用于为OpenGL API处理管道中包含的每个可编程处理器创建着色器。包含如下的着色器：  Vertex Tessellation Control Tessellation Evalution Geometry Fragment Compute  编译器处理阶段Shader处理器的编译单元在编译的最后阶段可选地链接在一起之前被分别处理。其处理逻辑如">
+<meta property="og:description" content="通过阅读本文你可以知道CPU和GPU的区别是什么。 结构  上图是CPU和GPU的结构对比图。通过对比可以看出：  CPU的计算单元较复杂，但是个数较少；GPU的计算单元相对简单，但是个数很多 CPU的控制单元较复杂；GPU的控制单元相对简单，分布在各计算核 CPU的片上缓存较大；GPU的片上缓存较小，分布在各计算核  为何他们的结构会差别这么大？这还得从他们的设计目标说起。 设计我们知道，GPU">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2020-02-01T06:11:31.201Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_vs_cpu&#x2F;1.png">
+<meta property="og:updated_time" content="2020-02-03T01:32:10.676Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_vs_cpu&#x2F;1.png">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
   
@@ -63,10 +65,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-GLSLCompilerPhases" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-gpu_vs_cpu" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/13/GLSLCompilerPhases/" class="article-date">
-  <time datetime="2019-11-13T00:00:00.000Z" itemprop="datePublished">2019-11-13</time>
+    <a href="/gpu_vs_cpu/" class="article-date">
+  <time datetime="2019-12-29T00:00:00.000Z" itemprop="datePublished">2019-12-29</time>
 </a>
     
   </div>
@@ -77,7 +79,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      GLSL 编译器处理逻辑
+      CPU和GPU的区别
     </h1>
   
 
@@ -85,42 +87,40 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="GLSL介绍"><a href="#GLSL介绍" class="headerlink" title="GLSL介绍"></a>GLSL介绍</h1><p>GLSL是多种紧密相关的语言，这些语言用于为OpenGL API处理管道中包含的每个可编程处理器创建着色器。包含如下的着色器：</p>
-<ul>
-<li>Vertex</li>
-<li>Tessellation Control</li>
-<li>Tessellation Evalution</li>
-<li>Geometry</li>
-<li>Fragment</li>
-<li>Compute</li>
-</ul>
-<h1 id="编译器处理阶段"><a href="#编译器处理阶段" class="headerlink" title="编译器处理阶段"></a>编译器处理阶段</h1><p>Shader处理器的编译单元在编译的最后阶段可选地链接在一起之前被分别处理。其处理逻辑如下：</p>
+        <p>通过阅读本文你可以知道CPU和GPU的区别是什么。</p>
+<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><img src="/gpu_vs_cpu/1.png" class="" title="CPU与GPU的结构">
+
+<p>上图是CPU和GPU的结构对比图。通过对比可以看出：</p>
 <ol>
-<li>源字符串是以字节序列输入，’\0’被解释为终止符。</li>
-<li>所有源字符串被串联以形成单个输入，’\0’字节被丢弃，所有其他值均保留。(每个shader可能有多个输入字符串)</li>
-<li>每个字符串均根据UTF-8标准进行解释，不同之处在于，所有无效字节序列均以其原始形式保留以用于后续处理。</li>
-<li>每个{回车，换行}和{换行，回车}序列都由单个换行符代替，所有剩余的回车符和换行符都将用单个换行符替代。</li>
-<li>每个字符的行号等于前一个换行符的数量加一。请注意，此操作只能随后通过#line指令进行更改，并且不受编译阶段6中删除换行符的影响。</li>
-<li>在换行符之前出现反斜杠（’&#39;）的都将被删除（转义）。请注意，不会替换任何空格，从而允许单个预处理令牌跨越换行符。此操作不是递归的；不会删除任何新生成的{反斜杠 换行符}序列。</li>
-<li>所有注释均替换为一个空格。注释中允许所有（非零）字符和无效的UTF-8字节序列。’//‘样式注释包括初始的’//‘标记，并一直延续到但不包括终止换行符。’/…/‘注释同时包含开始和结束标记。</li>
-<li>源字符串将转换为一系列预处理Token。这些Token包括预处理编号，标识符和预处理操作。每一个Token的行号是Token开始的第一个字节的行号。</li>
-<li>预处理器运行。执行指令并执行宏扩展。</li>
-<li>空格和换行符将被丢弃。</li>
-<li>预处理Token将转换为Token</li>
-<li>语法根据GLSL ES语法进行分析。</li>
-<li>根据语言的语义规则检查结果。</li>
-<li>将着色器链接在一起以形成一个或多个程序或分离的程序。当将一对连续阶段的着色器链接到同一程序时，两个着色器中未使用的任何输出和相应的输入都可能会被丢弃。</li>
-<li>生成二进制文件。</li>
+<li>CPU的计算单元较复杂，但是个数较少；GPU的计算单元相对简单，但是个数很多</li>
+<li>CPU的控制单元较复杂；GPU的控制单元相对简单，分布在各计算核</li>
+<li>CPU的片上缓存较大；GPU的片上缓存较小，分布在各计算核</li>
 </ol>
-<p>From：<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.2/GLSL_ES_Specification_3.20.html#logical-phases-of-compilation" target="_blank" rel="noopener">https://www.khronos.org/registry/OpenGL/specs/es/3.2/GLSL_ES_Specification_3.20.html#logical-phases-of-compilation</a></p>
+<p>为何他们的结构会差别这么大？这还得从他们的设计目标说起。</p>
+<h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><p>我们知道，GPU最开始是专门用来做图像渲染的。图像渲染有以下特点：</p>
+<ol>
+<li>被渲染的场景由非常多的顶点组成</li>
+<li>顶点组成的场景会被光栅化成非常多的片段</li>
+<li>对每个顶点或片段的处理逻辑都是一样的</li>
+</ol>
+<p>这类数据可以称作流数据。流数据具有数据量大和每个数据分量的处理逻辑类似的特点。NVIDIA的GPU中有一个概念是Stream Processor，即流处理器。流处理器处理的数据即为流数据。</p>
+<p>所以，GPU的设计目标是提高数据吞吐量。</p>
+<p>CPU要处理的任务从一开始就特别复杂，它得保证具有复杂控制逻辑的程序快速运行，而且还得支持多任务。多任务要求CPU的运行频率较高，这样才能让用户感觉多个任务是在并发执行。</p>
+<p>所以，GPU的设计目标是低时延。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
+<li>CPU需要很强的通用性来处理各种不同的数据类型，同时又要逻辑判断又会引入大量的分支跳转和中断的处理。这些都使得CPU的内部结构异常复杂。而GPU面对的则是类型高度统一的、相互无依赖的大规模数据和不需要被打断的纯净的计算环境。</li>
+<li>CPU是几个教授组成的，而GPU是很多个小学生组成的。</li>
+<li>CPU采用基于低延时的设计；GPU采用基于高吞吐量的设计。</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.cnblogs.com/biglucky/p/4223565.html" target="_blank" rel="noopener">https://www.cnblogs.com/biglucky/p/4223565.html</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/11/13/GLSLCompilerPhases/" data-id="ck63782n1000809ww5u0k9ke9" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="ck65s4k3y000g0tv0ho83fgzh" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
 
     </footer>
   </div>
@@ -128,19 +128,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/12/22/tbr/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/rendering_pipeline/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          基于TILE的渲染
+          图形渲染管线
         
       </div>
     </a>
   
   
-    <a href="/2019/11/11/fermi/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/vulkan_study_plan/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Fermi架构介绍</div>
+      <div class="article-nav-title">Vulkan学习计划</div>
     </a>
   
 </nav>
@@ -191,23 +191,23 @@
       <ul>
         
           <li>
-            <a href="/2019/12/30/rendering_pipeline/">图形渲染管线</a>
+            <a href="/rendering_pipeline/">图形渲染管线</a>
           </li>
         
           <li>
-            <a href="/2019/12/29/gpu_vs_cpu/">CPU和GPU的区别</a>
+            <a href="/gpu_vs_cpu/">CPU和GPU的区别</a>
           </li>
         
           <li>
-            <a href="/2019/12/28/vulkan_study_plan/">Vulkan学习计划</a>
+            <a href="/vulkan_study_plan/">Vulkan学习计划</a>
           </li>
         
           <li>
-            <a href="/2019/12/26/gpu_performance/">GPU性能指标</a>
+            <a href="/gpu_performance/">GPU性能指标</a>
           </li>
         
           <li>
-            <a href="/2019/12/23/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
+            <a href="/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
           </li>
         
       </ul>

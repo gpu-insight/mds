@@ -63,7 +63,7 @@
   
     <article id="post-rendering_pipeline" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/30/rendering_pipeline/" class="article-date">
+    <a href="/rendering_pipeline/" class="article-date">
   <time datetime="2019-12-30T00:00:00.000Z" itemprop="datePublished">2019-12-30</time>
 </a>
     
@@ -75,7 +75,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/30/rendering_pipeline/">图形渲染管线</a>
+      <a class="article-title" href="/rendering_pipeline/">图形渲染管线</a>
     </h1>
   
 
@@ -91,7 +91,7 @@
 <li>GPU芯片设计者视角下的图形渲染管线是怎样的？</li>
 </ol>
 <h1 id="图形渲染过程"><a href="#图形渲染过程" class="headerlink" title="图形渲染过程"></a>图形渲染过程</h1><p>图形渲染过程可以类比于给模特拍照的过程。</p>
-<img src="/2019/12/30/rendering_pipeline/1.jpg" class="" title="Lina">
+<img src="/rendering_pipeline/1.jpg" class="" title="Lina">
 
 <p>首先我们需要选择一个模特，给模特化妆，选择合适的首饰服装。然后将各种物品以及模特安排在场景的合适位置。接着摄影师调整灯光亮度，设置好相机的各种参数（角度，曝光度等）。最后按下快门，经过打印之后一张图片就生成了。</p>
 <p>总结下一张图片的生成过程，大致可以分为四步，分别为：</p>
@@ -122,17 +122,17 @@
 <p>纹理是最常用的优化措施。例如渲染一个游戏场景中的一棵树，与其使用成千上万个顶点构建这颗树的模型，不如直接使用一张纹理图片来代替。这样做可以极大的提高渲染效率。</p>
 <p>从上述可知，计算机图形渲染的输入有两类，分别为：顶点输入和像素输入；计算机图形渲染的输出为：帧缓冲区中的图像。</p>
 <p>帧缓冲区中的图像像素会由显示控制器以固有的频率读到显示器上进行显示。</p>
-<img src="/2019/12/30/rendering_pipeline/2.png" class="" title="计算机图形渲染管线的输入和输出">
+<img src="/rendering_pipeline/2.png" class="" title="计算机图形渲染管线的输入和输出">
 
 <p>计算机图形渲染分为实时渲染和非实时渲染。所谓实时，即快速响应。通常游戏画面的渲染都是实时渲染，计算机制作的电影画面的渲染都是非实时渲染。一个大型游戏的任何时刻截一张图都非常清晰，而电影画面中的高速运动物体的截图则是模糊的。</p>
 <p>计算机图形学中并没有明确地定义图形渲染管线，其更多的是研究如何使用计算机更快更好的渲染图形，多偏向于算法方向。图形渲染管线将在后续章节以OpenGL为例进行讲解。</p>
 <h1 id="OpenGL渲染管线"><a href="#OpenGL渲染管线" class="headerlink" title="OpenGL渲染管线"></a>OpenGL渲染管线</h1><p>渲染管线可分为可编程渲染管线和固定功能渲染管线。详细介绍请参看《GPU的渲染架构、渲染管线和渲染模式分类》<br>)</p>
 <p>关于<code>OpenGL渲染管线</code>，我们可以在各种地方看到这个关键词：计算机图形学、OpenGL官方网站、各大GPU厂商的官网等等。你会发现他们说的都不太一样。</p>
 <h2 id="计算机图形学视角看OpenGL渲染管线"><a href="#计算机图形学视角看OpenGL渲染管线" class="headerlink" title="计算机图形学视角看OpenGL渲染管线"></a>计算机图形学视角看OpenGL渲染管线</h2><p>OpenGL最初的内部流程是一组有序的处理步骤，这些步骤被组织为一个双通道的渲染流水线。流水线阶段当然是固定的—也就是说，它们无论接受到什么样的输入数据都会执行特定的操作—因此，这样的工作方式成为固定功能的OpenGL流水线。</p>
-<img src="/2019/12/30/rendering_pipeline/3.png" class="" title="计算机图形学视角下的OpenGL固定功能渲染管线">
+<img src="/rendering_pipeline/3.png" class="" title="计算机图形学视角下的OpenGL固定功能渲染管线">
 
 <p>图中，黑色方框部分一般称为<strong>几何流水线</strong>，Geometry Pipeline；橘色方框部分一般称为<strong>像素流水线</strong>，Pixel Pipeline。</p>
-<img src="/2019/12/30/rendering_pipeline/4.png" class="" title="计算机图形学视角下的OpenGL可编程渲染管线">
+<img src="/rendering_pipeline/4.png" class="" title="计算机图形学视角下的OpenGL可编程渲染管线">
 
 <p>图中，绿色方框部分是可编程的。应用程序通过使用Shader来控制这些阶段内所进行的操作。Shader指的是一些比较短的程序段，它们被加载到OpenGL程序中，并最终加入到OpenGL流水线的适当的处理单元中，替换掉流水线中原来的固定功能。</p>
 <h2 id="程序员视角看OpenGL渲染管线"><a href="#程序员视角看OpenGL渲染管线" class="headerlink" title="程序员视角看OpenGL渲染管线"></a>程序员视角看OpenGL渲染管线</h2><p>使用OpenGL编写应用程序或渲染引擎的程序员所面对的是OpenGL标准API。</p>
@@ -145,7 +145,7 @@
 <li>规范化设备坐标系。指定为一个设备无关的坐标系</li>
 <li>设备坐标系。将最终的图形显示到什么样的设备上</li>
 </ul>
-<img src="/2019/12/30/rendering_pipeline/5.png" class="" title="坐标变换">
+<img src="/rendering_pipeline/5.png" class="" title="坐标变换">
 
 <h3 id="OpenGL渲染管线-1"><a href="#OpenGL渲染管线-1" class="headerlink" title="OpenGL渲染管线"></a>OpenGL渲染管线</h3><p>OpenGL官方WIKI上将渲染管线分为7个步骤，分别为：</p>
 <ol>
@@ -157,9 +157,9 @@
 <li>Fragment Shader：片段着色</li>
 <li>Per-Sample Processing ：逐样本处理</li>
 </ol>
-<img src="/2019/12/30/rendering_pipeline/6.png" class="" title="OpenGL渲染管线">
+<img src="/rendering_pipeline/6.png" class="" title="OpenGL渲染管线">
 
-<img src="/2019/12/30/rendering_pipeline/7.png" class="" title="OpenGL渲染管线">
+<img src="/rendering_pipeline/7.png" class="" title="OpenGL渲染管线">
 
 <h2 id="GPU设计厂商视角看OpenGL渲染管线"><a href="#GPU设计厂商视角看OpenGL渲染管线" class="headerlink" title="GPU设计厂商视角看OpenGL渲染管线"></a>GPU设计厂商视角看OpenGL渲染管线</h2><p>和程序员一样，GPU设计厂商面对的也是OpenGL标准API，不同的是，前者是如何使用它们，后者是如何实现它们。</p>
 <p>在考虑如何实现他们之前，得先考虑该GPU是应用在什么场景。桌面端的GPU更注重性能，而功耗和面积则非重点考虑因素；移动端的GPU更注重功耗和面积，性能相较于桌面端的GPU则不那么高…</p>
@@ -190,7 +190,7 @@
 <li>cl_gremedy_computation_frame</li>
 </ol>
 <p>上述的“特定处理”，不同的GPU是完全不一样的。但他们的核心目的都是将OpenGL API转换成GPU硬件认识的，可以让GPU硬件高效工作的指令和数据。</p>
-<h3 id="GPU硬件渲染管线"><a href="#GPU硬件渲染管线" class="headerlink" title="GPU硬件渲染管线"></a>GPU硬件渲染管线</h3><img src="/2019/12/30/rendering_pipeline/8.png" class="" title="GeForce6800">
+<h3 id="GPU硬件渲染管线"><a href="#GPU硬件渲染管线" class="headerlink" title="GPU硬件渲染管线"></a>GPU硬件渲染管线</h3><img src="/rendering_pipeline/8.png" class="" title="GeForce6800">
 
 <p>上图是GeForce6800的硬件架构图。其处理流程为：从主机接收到驱动程序发送的指令和数据，先进行顶点着色。然后着色后的顶点进行图元装配，再对图元进行背面消隐、剪裁和光栅化。光栅化产生的片段送到片段着色器进行片段着色，此过程中有可能会用到纹理。着色后的片段再送到ROP单元进行深度模板测试、混合等操作，最后将像素写回帧缓冲区。</p>
 <p>上述过程看着和OpenGL官网描述的渲染管线挺像的。其实不然。上图中“ZCull”模块可以提前进行深度模板测试。</p>
@@ -214,7 +214,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/30/rendering_pipeline/" data-id="ck63782nu001b09ww8o4o3zga" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/rendering_pipeline/" data-id="ck65s4k4g001b0tv0dqj8hwqe" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li></ul>
@@ -228,7 +228,7 @@
   
     <article id="post-gpu_vs_cpu" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/29/gpu_vs_cpu/" class="article-date">
+    <a href="/gpu_vs_cpu/" class="article-date">
   <time datetime="2019-12-29T00:00:00.000Z" itemprop="datePublished">2019-12-29</time>
 </a>
     
@@ -240,7 +240,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/29/gpu_vs_cpu/">CPU和GPU的区别</a>
+      <a class="article-title" href="/gpu_vs_cpu/">CPU和GPU的区别</a>
     </h1>
   
 
@@ -249,7 +249,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>通过阅读本文你可以知道CPU和GPU的区别是什么。</p>
-<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><img src="/2019/12/29/gpu_vs_cpu/1.png" class="" title="CPU与GPU的结构">
+<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><img src="/gpu_vs_cpu/1.png" class="" title="CPU与GPU的结构">
 
 <p>上图是CPU和GPU的结构对比图。通过对比可以看出：</p>
 <ol>
@@ -278,7 +278,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/29/gpu_vs_cpu/" data-id="ck63782n9000g09wwavjg16s3" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="ck65s4k3y000g0tv0ho83fgzh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -292,7 +292,7 @@
   
     <article id="post-vulkan_study_plan" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/28/vulkan_study_plan/" class="article-date">
+    <a href="/vulkan_study_plan/" class="article-date">
   <time datetime="2019-12-28T00:00:00.000Z" itemprop="datePublished">2019-12-28</time>
 </a>
     
@@ -304,7 +304,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/28/vulkan_study_plan/">Vulkan学习计划</a>
+      <a class="article-title" href="/vulkan_study_plan/">Vulkan学习计划</a>
     </h1>
   
 
@@ -363,7 +363,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/28/vulkan_study_plan/" data-id="ck63782nc000j09ww6www8cvj" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/vulkan_study_plan/" data-id="ck65s4k42000j0tv00j6q36w3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li></ul>
@@ -377,7 +377,7 @@
   
     <article id="post-gpu_performance" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/26/gpu_performance/" class="article-date">
+    <a href="/gpu_performance/" class="article-date">
   <time datetime="2019-12-26T00:00:00.000Z" itemprop="datePublished">2019-12-26</time>
 </a>
     
@@ -389,7 +389,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/26/gpu_performance/">GPU性能指标</a>
+      <a class="article-title" href="/gpu_performance/">GPU性能指标</a>
     </h1>
   
 
@@ -459,7 +459,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/26/gpu_performance/" data-id="ck63782n7000c09wwfu3i74m9" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_performance/" data-id="ck65s4k3u000c0tv00h3603je" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li></ul>
@@ -473,7 +473,7 @@
   
     <article id="post-gpu_terms" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/23/gpu_terms/" class="article-date">
+    <a href="/gpu_terms/" class="article-date">
   <time datetime="2019-12-23T00:00:00.000Z" itemprop="datePublished">2019-12-23</time>
 </a>
     
@@ -485,7 +485,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/23/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
+      <a class="article-title" href="/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
     </h1>
   
 
@@ -538,7 +538,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/23/gpu_terms/" data-id="ck63782n8000d09wwh2q76vdt" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_terms/" data-id="ck65s4k3w000d0tv0hu3ufbbz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
@@ -552,7 +552,7 @@
   
     <article id="post-tbr" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/22/tbr/" class="article-date">
+    <a href="/tbr/" class="article-date">
   <time datetime="2019-12-22T00:00:00.000Z" itemprop="datePublished">2019-12-22</time>
 </a>
     
@@ -564,7 +564,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/22/tbr/">基于TILE的渲染</a>
+      <a class="article-title" href="/tbr/">基于TILE的渲染</a>
     </h1>
   
 
@@ -605,11 +605,11 @@
 <p>TILE足够小则意味着这个TILE对应的颜色、深度、模板缓冲区的存储在片上也可以放一份。这样做有什么好处呢？</p>
 <h2 id="TILE的好处"><a href="#TILE的好处" class="headerlink" title="TILE的好处"></a>TILE的好处</h2><p>假设GPU当前渲染的帧中包含100个三角形，且开启了深度模板测试和混合，那么，传统的渲染模式（立即渲染模式，IMR）每渲染一个三角形就需要从显存中读取这个三角形所覆盖的所有像素的颜色、深度和模板，渲染之后还需要立马写回显存。</p>
 <p>耗时耗力！</p>
-<img src="/2019/12/22/tbr/imr_data_flow.png" class="" title="立即渲染数据流">
+<img src="/tbr/imr_data_flow.png" class="" title="立即渲染数据流">
 
 <p>而TBR会逐个遍历TILE，首先看都有哪些三角形覆盖了当前遍历到的TILE，最坏的情况下，某个TILE被100个三角形所覆盖，那么遍历这100个三角形，每渲染一个三角形(TILE覆盖部分而非三角形全部)则将结果放到这个TILE对应的片上高速缓存中，直到遍历完所有的三角形，最后将结果写回显存中的帧缓冲区。</p>
 <p>可以看到，TBR将读写显存的频率大大降低。这首先带来的好处是低功耗，其次是高效率。</p>
-<img src="/2019/12/22/tbr/tbr_data_flow.png" class="" title="分块渲染数据流">
+<img src="/tbr/tbr_data_flow.png" class="" title="分块渲染数据流">
 
 <p>除此之外，TILE还可以提高多采样的效率，方便应用一些优化策略。</p>
 <h1 id="TBR"><a href="#TBR" class="headerlink" title="TBR"></a>TBR</h1><p>TBR的处理逻辑是这样的：</p>
@@ -632,7 +632,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/22/tbr/" data-id="ck63782nb000h09ww1yb1auis" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/tbr/" data-id="ck65s4k40000h0tv0hsroa5xr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li></ul>
@@ -646,7 +646,7 @@
   
     <article id="post-GLSLCompilerPhases" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/13/GLSLCompilerPhases/" class="article-date">
+    <a href="/GLSLCompilerPhases/" class="article-date">
   <time datetime="2019-11-13T00:00:00.000Z" itemprop="datePublished">2019-11-13</time>
 </a>
     
@@ -658,7 +658,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/13/GLSLCompilerPhases/">GLSL 编译器处理逻辑</a>
+      <a class="article-title" href="/GLSLCompilerPhases/">GLSL 编译器处理逻辑</a>
     </h1>
   
 
@@ -698,7 +698,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/11/13/GLSLCompilerPhases/" data-id="ck63782n1000809ww5u0k9ke9" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/GLSLCompilerPhases/" data-id="ck65s4k3q00080tv0evzp4axa" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li></ul>
@@ -712,7 +712,7 @@
   
     <article id="post-fermi" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/11/11/fermi/" class="article-date">
+    <a href="/fermi/" class="article-date">
   <time datetime="2019-11-11T00:00:00.000Z" itemprop="datePublished">2019-11-11</time>
 </a>
     
@@ -724,7 +724,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/11/fermi/">Fermi架构介绍</a>
+      <a class="article-title" href="/fermi/">Fermi架构介绍</a>
     </h1>
   
 
@@ -735,9 +735,9 @@
         <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Fermi是NVIDIA公司的GPU架构的名称。取这个名字是为了纪念美籍著名意大利物理学家Erico Fermi。</p>
 <p>Erico Fermi造出了人类第一台可控核反应堆—芝加哥一号堆，被称为“原子能之父”，在1938年获得了诺贝尔物理学奖。</p>
 <p>NVIDIA声称Fermi架构是世界上第一个完整地支持通用计算的GPU架构。</p>
-<h1 id="架构模型"><a href="#架构模型" class="headerlink" title="架构模型"></a>架构模型</h1><img src="/2019/11/11/fermi/fermi-0.png" class="" title="Fermi结构">
-<img src="/2019/11/11/fermi/fermi-1.png" class="" title="SM结构">
-<img src="/2019/11/11/fermi/fermi-2.png" class="" title="SM执行Warp指令">
+<h1 id="架构模型"><a href="#架构模型" class="headerlink" title="架构模型"></a>架构模型</h1><img src="/fermi/fermi-0.png" class="" title="Fermi结构">
+<img src="/fermi/fermi-1.png" class="" title="SM结构">
+<img src="/fermi/fermi-2.png" class="" title="SM执行Warp指令">
 
 <h1 id="编程模型"><a href="#编程模型" class="headerlink" title="编程模型"></a>编程模型</h1><h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>Application可以包含一个或多个<a href="#Kernel">Kernel</a>，通常用来做顶点/像素染色或者通用计算。与常见的CPU程序相比，Application的分支跳转语句相对较少；程序长度相对较短；算数运算类语句相对较多。</p>
 <p>Application支持OpenGL、CUDA、OpenCL和Direct Compute API。</p>
@@ -751,7 +751,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/11/11/fermi/" data-id="ck63782n3000909ww1xjd0qzt" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/fermi/" data-id="ck65s4k3r00090tv02qggff6r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -765,7 +765,7 @@
   
     <article id="post-gpgpusim_install" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/10/23/gpgpusim_install/" class="article-date">
+    <a href="/gpgpusim_install/" class="article-date">
   <time datetime="2019-10-23T14:17:50.000Z" itemprop="datePublished">2019-10-23</time>
 </a>
     
@@ -777,7 +777,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/23/gpgpusim_install/">GPGPU-Sim 安装过程</a>
+      <a class="article-title" href="/gpgpusim_install/">GPGPU-Sim 安装过程</a>
     </h1>
   
 
@@ -822,7 +822,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/10/23/gpgpusim_install/" data-id="ck63782n5000b09ww65zw45b2" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpgpusim_install/" data-id="ck65s4k3s000b0tv06959bsfd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
@@ -879,23 +879,23 @@
       <ul>
         
           <li>
-            <a href="/2019/12/30/rendering_pipeline/">图形渲染管线</a>
+            <a href="/rendering_pipeline/">图形渲染管线</a>
           </li>
         
           <li>
-            <a href="/2019/12/29/gpu_vs_cpu/">CPU和GPU的区别</a>
+            <a href="/gpu_vs_cpu/">CPU和GPU的区别</a>
           </li>
         
           <li>
-            <a href="/2019/12/28/vulkan_study_plan/">Vulkan学习计划</a>
+            <a href="/vulkan_study_plan/">Vulkan学习计划</a>
           </li>
         
           <li>
-            <a href="/2019/12/26/gpu_performance/">GPU性能指标</a>
+            <a href="/gpu_performance/">GPU性能指标</a>
           </li>
         
           <li>
-            <a href="/2019/12/23/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
+            <a href="/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
           </li>
         
       </ul>

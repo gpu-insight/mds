@@ -5,17 +5,17 @@
   
 
   
-  <title>Vulkan学习计划 | GPU 观察</title>
+  <title>GLSL 编译器处理逻辑 | GPU 观察</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文记录的是个人的Vulkan学习计划，仅供参考。 制定Vulkan学习计划的思路是：  找学习资料 根据学习资料掌握Vulkan整体脉络 根据整体脉络制定学习计划 执行学习计划  找学习资料有一个原则：找第一手资料或权威的资料。这是为了避免走弯路。 资料整理官网 官网：https:&#x2F;&#x2F;www.khronos.org&#x2F;vulkan&#x2F;  说明文档主页：https:&#x2F;&#x2F;www.khronos.org&#x2F;">
-<meta name="keywords" content="Vulkan">
+  <meta name="description" content="GLSL介绍GLSL是多种紧密相关的语言，这些语言用于为OpenGL API处理管道中包含的每个可编程处理器创建着色器。包含如下的着色器：  Vertex Tessellation Control Tessellation Evalution Geometry Fragment Compute  编译器处理阶段Shader处理器的编译单元在编译的最后阶段可选地链接在一起之前被分别处理。其处理逻辑如">
+<meta name="keywords" content="GLSL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Vulkan学习计划">
-<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;28&#x2F;vulkan_study_plan&#x2F;index.html">
+<meta property="og:title" content="GLSL 编译器处理逻辑">
+<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;GLSLCompilerPhases&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
-<meta property="og:description" content="本文记录的是个人的Vulkan学习计划，仅供参考。 制定Vulkan学习计划的思路是：  找学习资料 根据学习资料掌握Vulkan整体脉络 根据整体脉络制定学习计划 执行学习计划  找学习资料有一个原则：找第一手资料或权威的资料。这是为了避免走弯路。 资料整理官网 官网：https:&#x2F;&#x2F;www.khronos.org&#x2F;vulkan&#x2F;  说明文档主页：https:&#x2F;&#x2F;www.khronos.org&#x2F;">
+<meta property="og:description" content="GLSL介绍GLSL是多种紧密相关的语言，这些语言用于为OpenGL API处理管道中包含的每个可编程处理器创建着色器。包含如下的着色器：  Vertex Tessellation Control Tessellation Evalution Geometry Fragment Compute  编译器处理阶段Shader处理器的编译单元在编译的最后阶段可选地链接在一起之前被分别处理。其处理逻辑如">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2020-02-01T06:11:31.213Z">
+<meta property="og:updated_time" content="2020-02-03T01:32:10.672Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
@@ -63,10 +63,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-vulkan_study_plan" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-GLSLCompilerPhases" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/28/vulkan_study_plan/" class="article-date">
-  <time datetime="2019-12-28T00:00:00.000Z" itemprop="datePublished">2019-12-28</time>
+    <a href="/GLSLCompilerPhases/" class="article-date">
+  <time datetime="2019-11-13T00:00:00.000Z" itemprop="datePublished">2019-11-13</time>
 </a>
     
   </div>
@@ -77,7 +77,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Vulkan学习计划
+      GLSL 编译器处理逻辑
     </h1>
   
 
@@ -85,61 +85,42 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本文记录的是个人的Vulkan学习计划，仅供参考。</p>
-<p>制定Vulkan学习计划的思路是：</p>
-<ol>
-<li>找学习资料</li>
-<li>根据学习资料掌握Vulkan整体脉络</li>
-<li>根据整体脉络制定学习计划</li>
-<li>执行学习计划</li>
-</ol>
-<p>找学习资料有一个原则：找第一手资料或权威的资料。这是为了避免走弯路。</p>
-<h1 id="资料整理"><a href="#资料整理" class="headerlink" title="资料整理"></a>资料整理</h1><h2 id="官网"><a href="#官网" class="headerlink" title="官网"></a>官网</h2><ol>
-<li><p>官网：<a href="https://www.khronos.org/vulkan/" target="_blank" rel="noopener">https://www.khronos.org/vulkan/</a></p>
-</li>
-<li><p>说明文档主页：<a href="https://www.khronos.org/registry/vulkan/" target="_blank" rel="noopener">https://www.khronos.org/registry/vulkan/</a></p>
-<ol>
-<li>说明文档：<a href="https://www.khronos.org/registry/vulkan/specs/" target="_blank" rel="noopener">https://www.khronos.org/registry/vulkan/specs/</a><ul>
-<li>v1.0：<a href="https://www.khronos.org/registry/vulkan/specs/1.0/html/" target="_blank" rel="noopener">https://www.khronos.org/registry/vulkan/specs/1.0/html/</a></li>
-<li>v1.1：<a href="https://www.khronos.org/registry/vulkan/specs/1.1/html/" target="_blank" rel="noopener">https://www.khronos.org/registry/vulkan/specs/1.1/html/</a></li>
+        <h1 id="GLSL介绍"><a href="#GLSL介绍" class="headerlink" title="GLSL介绍"></a>GLSL介绍</h1><p>GLSL是多种紧密相关的语言，这些语言用于为OpenGL API处理管道中包含的每个可编程处理器创建着色器。包含如下的着色器：</p>
+<ul>
+<li>Vertex</li>
+<li>Tessellation Control</li>
+<li>Tessellation Evalution</li>
+<li>Geometry</li>
+<li>Fragment</li>
+<li>Compute</li>
 </ul>
-</li>
+<h1 id="编译器处理阶段"><a href="#编译器处理阶段" class="headerlink" title="编译器处理阶段"></a>编译器处理阶段</h1><p>Shader处理器的编译单元在编译的最后阶段可选地链接在一起之前被分别处理。其处理逻辑如下：</p>
+<ol>
+<li>源字符串是以字节序列输入，’\0’被解释为终止符。</li>
+<li>所有源字符串被串联以形成单个输入，’\0’字节被丢弃，所有其他值均保留。(每个shader可能有多个输入字符串)</li>
+<li>每个字符串均根据UTF-8标准进行解释，不同之处在于，所有无效字节序列均以其原始形式保留以用于后续处理。</li>
+<li>每个{回车，换行}和{换行，回车}序列都由单个换行符代替，所有剩余的回车符和换行符都将用单个换行符替代。</li>
+<li>每个字符的行号等于前一个换行符的数量加一。请注意，此操作只能随后通过#line指令进行更改，并且不受编译阶段6中删除换行符的影响。</li>
+<li>在换行符之前出现反斜杠（’&#39;）的都将被删除（转义）。请注意，不会替换任何空格，从而允许单个预处理令牌跨越换行符。此操作不是递归的；不会删除任何新生成的{反斜杠 换行符}序列。</li>
+<li>所有注释均替换为一个空格。注释中允许所有（非零）字符和无效的UTF-8字节序列。’//‘样式注释包括初始的’//‘标记，并一直延续到但不包括终止换行符。’/…/‘注释同时包含开始和结束标记。</li>
+<li>源字符串将转换为一系列预处理Token。这些Token包括预处理编号，标识符和预处理操作。每一个Token的行号是Token开始的第一个字节的行号。</li>
+<li>预处理器运行。执行指令并执行宏扩展。</li>
+<li>空格和换行符将被丢弃。</li>
+<li>预处理Token将转换为Token</li>
+<li>语法根据GLSL ES语法进行分析。</li>
+<li>根据语言的语义规则检查结果。</li>
+<li>将着色器链接在一起以形成一个或多个程序或分离的程序。当将一对连续阶段的着色器链接到同一程序时，两个着色器中未使用的任何输出和相应的输入都可能会被丢弃。</li>
+<li>生成二进制文件。</li>
 </ol>
-</li>
-<li><p>示例程序：<a href="https://github.com/KhronosGroup/Vulkan-Samples" target="_blank" rel="noopener">https://github.com/KhronosGroup/Vulkan-Samples</a></p>
-</li>
-<li><p>学习指引：<a href="https://github.com/KhronosGroup/Vulkan-Guide" target="_blank" rel="noopener">https://github.com/KhronosGroup/Vulkan-Guide</a></p>
-</li>
-</ol>
-<h2 id="NVIDIA"><a href="#NVIDIA" class="headerlink" title="NVIDIA"></a>NVIDIA</h2><ol>
-<li>NVIDIA Vulkan：<a href="https://developer.nvidia.com/Vulkan" target="_blank" rel="noopener">https://developer.nvidia.com/Vulkan</a></li>
-<li>培训资料：<a href="https://developer.nvidia.com/nvidia-vulkan-developer-day" target="_blank" rel="noopener">https://developer.nvidia.com/nvidia-vulkan-developer-day</a><ul>
-<li>Vulkan整体介绍：<a href="https://developer.nvidia.com/sites/default/files/akamai/gameworks/VulkanDevDaypdaniel.pdf" target="_blank" rel="noopener">VulkanDevDaypdaniel.pdf</a></li>
-</ul>
-</li>
-</ol>
-<h2 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h2><ol>
-<li>AMD Vulkan：<a href="https://www.amd.com/zh-hans/technologies/vulkan" target="_blank" rel="noopener">https://www.amd.com/zh-hans/technologies/vulkan</a></li>
-</ol>
-<h2 id="IMAGINATION"><a href="#IMAGINATION" class="headerlink" title="IMAGINATION"></a>IMAGINATION</h2><ol>
-<li>IMAGINATION Vulkan：<a href="https://www.imgtec.com/developers/vulkan/" target="_blank" rel="noopener">https://www.imgtec.com/developers/vulkan/</a></li>
-</ol>
-<h2 id="Qualcomm"><a href="#Qualcomm" class="headerlink" title="Qualcomm"></a>Qualcomm</h2><ol>
-<li>高通 Vulkan：<a href="https://developer.qualcomm.com/qfile/34706/80-nb295-7_a-adreno_vulkan_developer_guide.pdf" target="_blank" rel="noopener">Qualcomm Adreno Vulkan - Qualcomm Developer Network</a></li>
-<li><a href="https://developer.qualcomm.com/blog/how-start-using-adreno-sdk-vulkan" target="_blank" rel="noopener">How to Start Using Adreno SDK for Vulkan</a></li>
-</ol>
-<h2 id="ARM"><a href="#ARM" class="headerlink" title="ARM"></a>ARM</h2><ol>
-<li>ARM Vulkan：<a href="https://developer.arm.com/solutions/graphics/apis/vulkan" target="_blank" rel="noopener">https://developer.arm.com/solutions/graphics/apis/vulkan</a></li>
-</ol>
-<h1 id="学习计划"><a href="#学习计划" class="headerlink" title="学习计划"></a>学习计划</h1><p>待添加</p>
+<p>From：<a href="https://www.khronos.org/registry/OpenGL/specs/es/3.2/GLSL_ES_Specification_3.20.html#logical-phases-of-compilation" target="_blank" rel="noopener">https://www.khronos.org/registry/OpenGL/specs/es/3.2/GLSL_ES_Specification_3.20.html#logical-phases-of-compilation</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/28/vulkan_study_plan/" data-id="ck63782nc000j09ww6www8cvj" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/GLSLCompilerPhases/" data-id="ck65s4k3q00080tv0evzp4axa" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li></ul>
 
     </footer>
   </div>
@@ -147,19 +128,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/12/29/gpu_vs_cpu/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/tbr/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          CPU和GPU的区别
+          基于TILE的渲染
         
       </div>
     </a>
   
   
-    <a href="/2019/12/26/gpu_performance/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/fermi/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">GPU性能指标</div>
+      <div class="article-nav-title">Fermi架构介绍</div>
     </a>
   
 </nav>
@@ -210,23 +191,23 @@
       <ul>
         
           <li>
-            <a href="/2019/12/30/rendering_pipeline/">图形渲染管线</a>
+            <a href="/rendering_pipeline/">图形渲染管线</a>
           </li>
         
           <li>
-            <a href="/2019/12/29/gpu_vs_cpu/">CPU和GPU的区别</a>
+            <a href="/gpu_vs_cpu/">CPU和GPU的区别</a>
           </li>
         
           <li>
-            <a href="/2019/12/28/vulkan_study_plan/">Vulkan学习计划</a>
+            <a href="/vulkan_study_plan/">Vulkan学习计划</a>
           </li>
         
           <li>
-            <a href="/2019/12/26/gpu_performance/">GPU性能指标</a>
+            <a href="/gpu_performance/">GPU性能指标</a>
           </li>
         
           <li>
-            <a href="/2019/12/23/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
+            <a href="/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
           </li>
         
       </ul>

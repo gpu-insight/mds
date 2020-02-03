@@ -11,15 +11,15 @@
 <meta name="keywords" content="GPU,TBR">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于TILE的渲染">
-<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;22&#x2F;tbr&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;tbr&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
 <meta property="og:description" content="缩写   缩写 说明    GPU Graphics Processing Unit，图形处理单元。   SC Shader Core，渲染核。GPU中的微处理器，负责执行顶点着色程序、片段着色程序和通用计算程序。   TBR Tile-based Rendering，基于TILE的渲染。   IMR Immediate Mode Rendering，立即渲染模式。   TILETILE的必应词典">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;22&#x2F;tbr&#x2F;imr_data_flow.png">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;22&#x2F;tbr&#x2F;tbr_data_flow.png">
-<meta property="og:updated_time" content="2020-02-01T06:11:31.213Z">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;tbr&#x2F;imr_data_flow.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;tbr&#x2F;tbr_data_flow.png">
+<meta property="og:updated_time" content="2020-02-03T01:32:10.684Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;2019&#x2F;12&#x2F;22&#x2F;tbr&#x2F;imr_data_flow.png">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;tbr&#x2F;imr_data_flow.png">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
   
@@ -68,7 +68,7 @@
       <div class="outer">
         <section id="main"><article id="post-tbr" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2019/12/22/tbr/" class="article-date">
+    <a href="/tbr/" class="article-date">
   <time datetime="2019-12-22T00:00:00.000Z" itemprop="datePublished">2019-12-22</time>
 </a>
     
@@ -121,11 +121,11 @@
 <p>TILE足够小则意味着这个TILE对应的颜色、深度、模板缓冲区的存储在片上也可以放一份。这样做有什么好处呢？</p>
 <h2 id="TILE的好处"><a href="#TILE的好处" class="headerlink" title="TILE的好处"></a>TILE的好处</h2><p>假设GPU当前渲染的帧中包含100个三角形，且开启了深度模板测试和混合，那么，传统的渲染模式（立即渲染模式，IMR）每渲染一个三角形就需要从显存中读取这个三角形所覆盖的所有像素的颜色、深度和模板，渲染之后还需要立马写回显存。</p>
 <p>耗时耗力！</p>
-<img src="/2019/12/22/tbr/imr_data_flow.png" class="" title="立即渲染数据流">
+<img src="/tbr/imr_data_flow.png" class="" title="立即渲染数据流">
 
 <p>而TBR会逐个遍历TILE，首先看都有哪些三角形覆盖了当前遍历到的TILE，最坏的情况下，某个TILE被100个三角形所覆盖，那么遍历这100个三角形，每渲染一个三角形(TILE覆盖部分而非三角形全部)则将结果放到这个TILE对应的片上高速缓存中，直到遍历完所有的三角形，最后将结果写回显存中的帧缓冲区。</p>
 <p>可以看到，TBR将读写显存的频率大大降低。这首先带来的好处是低功耗，其次是高效率。</p>
-<img src="/2019/12/22/tbr/tbr_data_flow.png" class="" title="分块渲染数据流">
+<img src="/tbr/tbr_data_flow.png" class="" title="分块渲染数据流">
 
 <p>除此之外，TILE还可以提高多采样的效率，方便应用一些优化策略。</p>
 <h1 id="TBR"><a href="#TBR" class="headerlink" title="TBR"></a>TBR</h1><p>TBR的处理逻辑是这样的：</p>
@@ -148,7 +148,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/2019/12/22/tbr/" data-id="ck63782nb000h09ww1yb1auis" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/tbr/" data-id="ck65s4k40000h0tv0hsroa5xr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li></ul>
@@ -159,7 +159,7 @@
     
 <nav id="article-nav">
   
-    <a href="/2019/12/23/gpu_terms/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/gpu_terms/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
@@ -169,7 +169,7 @@
     </a>
   
   
-    <a href="/2019/11/13/GLSLCompilerPhases/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/GLSLCompilerPhases/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">GLSL 编译器处理逻辑</div>
     </a>
@@ -222,23 +222,23 @@
       <ul>
         
           <li>
-            <a href="/2019/12/30/rendering_pipeline/">图形渲染管线</a>
+            <a href="/rendering_pipeline/">图形渲染管线</a>
           </li>
         
           <li>
-            <a href="/2019/12/29/gpu_vs_cpu/">CPU和GPU的区别</a>
+            <a href="/gpu_vs_cpu/">CPU和GPU的区别</a>
           </li>
         
           <li>
-            <a href="/2019/12/28/vulkan_study_plan/">Vulkan学习计划</a>
+            <a href="/vulkan_study_plan/">Vulkan学习计划</a>
           </li>
         
           <li>
-            <a href="/2019/12/26/gpu_performance/">GPU性能指标</a>
+            <a href="/gpu_performance/">GPU性能指标</a>
           </li>
         
           <li>
-            <a href="/2019/12/23/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
+            <a href="/gpu_terms/">GPU的渲染架构、渲染管线和渲染模式分类</a>
           </li>
         
       </ul>
