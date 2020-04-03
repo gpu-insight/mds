@@ -41,4 +41,4 @@ make NVCCFLAGS="--cudart shared"
 编译好Sample后，将`GPGPU-Sim/configs/tested-cfgs`目录下的任意一个配置目录下所有文件拷贝到Sample所在目录，就可以直接基于GPGPU-Sim运行CUDA Sample.
 
 References:
-[0. GPGPU-Sim安装过程](gpgpusim_install.md)
+[0. GPGPU-Sim安装过程](/gpgpusim_install/)
