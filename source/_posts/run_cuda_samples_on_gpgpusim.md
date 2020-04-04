@@ -21,7 +21,7 @@ CUDA Samples是示范CUDA编程概念的软件包。自CUDA 4.1开始，CUDA Too
 - common
 
 # Incompatible GCC Version
-如果你安装的是CUDA Toolkit 9.0, 它所兼容的GCC Version最高到 gcc-6. 如果你的环境是Ubuntu 19.10，那么在编译CUDA Samples之前，你需要降级GCC Version到6以下，方法如下：
+如果你安装的是CUDA Toolkit 9.0, 它所兼容的GCC Version最高到 gcc-6. 如果你的环境是Ubuntu 19.10，那么在编译CUDA Samples之前，你需要降级GCC Version到6或以下，方法如下：
 ```bash
 sudo apt install gcc-4.8
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 10
@@ -38,7 +38,15 @@ sudo sh cuda_9.0.176_384.81_linux.run --override
 ```bash
 make NVCCFLAGS="--cudart shared"
 ```
-编译好Sample后，将`GPGPU-Sim/configs/tested-cfgs`目录下的任意一个配置目录下所有文件拷贝到Sample所在目录，就可以直接基于GPGPU-Sim运行CUDA Sample.
 
-References:
+# Run Samples
+在 Run Samples 之前，需要配置GPGPU-Sim的仿真参数和`libcudart.so`的路径:
+```bash
+cp gpgpu-sim-src-dir/configs/tested-cfgs/SM2_GTX480/* /path/to/samples
+source gpgpu-sim-src-dir/setup_environment
+```
+
+现在可以让CUDA Samples运行在GPGPU-Sim仿真器上了。
+
+# References:
 [0. GPGPU-Sim安装过程](/gpgpusim_install/)
