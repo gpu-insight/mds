@@ -98,7 +98,7 @@
 <li>bin</li>
 <li>common</li>
 </ul>
-<h1 id="Incompatible-GCC-Version"><a href="#Incompatible-GCC-Version" class="headerlink" title="Incompatible GCC Version"></a>Incompatible GCC Version</h1><p>如果你安装的是CUDA Toolkit 9.0, 它所兼容的GCC Version最高到 gcc-6. 如果你的环境是Ubuntu 19.10，那么在编译CUDA Samples之前，你需要降级GCC Version到6以下，方法如下：</p>
+<h1 id="Incompatible-GCC-Version"><a href="#Incompatible-GCC-Version" class="headerlink" title="Incompatible GCC Version"></a>Incompatible GCC Version</h1><p>如果你安装的是CUDA Toolkit 9.0, 它所兼容的GCC Version最高到 gcc-6. 如果你的环境是Ubuntu 19.10，那么在编译CUDA Samples之前，你需要降级GCC Version到6或以下，方法如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gcc-4.8</span><br><span class="line">sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 10</span><br></pre></td></tr></table></figure>
 <p><code>update-alternatives</code> 更新<code>/etc/alternatives</code>目录下的<code>gcc</code>链接指向<code>/usr/bin/gcc-4.8</code>, 它的最后的参数<code>10</code>是指priority.</p>
 <p>NOTE: 安装CUDA Toolkit时会进行GCC Compatibility检查，但是可以通过下面选项忽略这个检查：</p>
@@ -106,13 +106,17 @@
 
 <h1 id="Build-Samples"><a href="#Build-Samples" class="headerlink" title="Build Samples"></a>Build Samples</h1><p>构建CUDA Samples可以在顶层目录构建所有Samples, 也可以到单个目录下构建一个Sample. 为了能够让可执行文件能够链接到GPGPU-Sim的<code>libcudart.so</code>,需要这样运行构建命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make NVCCFLAGS=<span class="string">"--cudart shared"</span></span><br></pre></td></tr></table></figure>
-<p>编译好Sample后，将<code>GPGPU-Sim/configs/tested-cfgs</code>目录下的任意一个配置目录下所有文件拷贝到Sample所在目录，就可以直接基于GPGPU-Sim运行CUDA Sample.</p>
-<p>References:<br><a href="/gpgpusim_install/">0. GPGPU-Sim安装过程</a></p>
+
+<h1 id="Run-Samples"><a href="#Run-Samples" class="headerlink" title="Run Samples"></a>Run Samples</h1><p>在 Run Samples 之前，需要配置GPGPU-Sim的仿真参数和<code>libcudart.so</code>的路径:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp gpgpu-sim-src-dir/configs/tested-cfgs/SM2_GTX480/* /path/to/samples</span><br><span class="line"><span class="built_in">source</span> gpgpu-sim-src-dir/setup_environment</span><br></pre></td></tr></table></figure>
+
+<p>现在可以让CUDA Samples运行在GPGPU-Sim仿真器上了。</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References:"></a>References:</h1><p><a href="/gpgpusim_install/">0. GPGPU-Sim安装过程</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/run_cuda_samples_on_gpgpusim/" data-id="ck8l2rkuj000h01l09q4p5o8w" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/run_cuda_samples_on_gpgpusim/" data-id="ck8l3hene000hyzpz46p09sct" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
@@ -277,7 +281,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/rendering_pipeline/" data-id="ck8l2rkv7001e01l0aeaz1ssl" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/rendering_pipeline/" data-id="ck8l3heo3001eyzpzaqbv93jc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li></ul>
@@ -341,7 +345,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="ck8l2rkui000g01l09j6i0w0r" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="ck8l3henc000gyzpz8241cnlq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -426,7 +430,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/vulkan_study_plan/" data-id="ck8l2rkun000l01l0h6f7bpq7" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/vulkan_study_plan/" data-id="ck8l3henh000lyzpz58gm8xgc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li></ul>
@@ -522,7 +526,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_performance/" data-id="ck8l2rkub000c01l037n57s1p" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_performance/" data-id="ck8l3hen7000cyzpz6ip9hc96" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li></ul>
@@ -601,7 +605,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_terms/" data-id="ck8l2rkue000d01l06733gcaj" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_terms/" data-id="ck8l3hena000dyzpzc2521lu6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
@@ -695,7 +699,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/tbr/" data-id="ck8l2rkum000j01l0dp6ba0ts" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/tbr/" data-id="ck8l3heng000jyzpz8qpa761w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li></ul>
@@ -761,7 +765,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/GLSLCompilerPhases/" data-id="ck8l2rku7000801l07gbbdm45" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/GLSLCompilerPhases/" data-id="ck8l3hen30008yzpzav923w9r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li></ul>
@@ -814,7 +818,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/fermi/" data-id="ck8l2rku8000901l0e1qc7fl3" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/fermi/" data-id="ck8l3hen50009yzpz9ashejuj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -885,7 +889,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpgpusim_install/" data-id="ck8l2rkua000b01l0fb6icw9t" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpgpusim_install/" data-id="ck8l3hen6000byzpz9n8kaxny" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
