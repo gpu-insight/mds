@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://gpuinsight.com/tbr/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>  <url>
     <loc>https://gpuinsight.com/vulkan_study_plan/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <lastmod>2020-04-04</lastmod>
   </url>  <url>
-    <loc>https://gpuinsight.com/gpgpusim_install/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <loc>https://gpuinsight.com/run_cuda_samples_on_gpgpusim/</loc>
+    <lastmod>2020-04-04</lastmod>
   </url>  <url>
-    <loc>https://gpuinsight.com/gpu_performance/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <loc>https://gpuinsight.com/tbr/</loc>
+    <lastmod>2020-04-04</lastmod>
   </url>  <url>
     <loc>https://gpuinsight.com/gpu_terms/</loc>
-    <lastmod>2020-02-03</lastmod>
-  </url>  <url>
-    <loc>https://gpuinsight.com/gpu_vs_cpu/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <lastmod>2020-04-04</lastmod>
   </url>  <url>
     <loc>https://gpuinsight.com/rendering_pipeline/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <lastmod>2020-04-04</lastmod>
   </url>  <url>
-    <loc>https://gpuinsight.com/GLSLCompilerPhases/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <loc>https://gpuinsight.com/gpu_vs_cpu/</loc>
+    <lastmod>2020-04-04</lastmod>
+  </url>  <url>
+    <loc>https://gpuinsight.com/gpgpusim_install/</loc>
+    <lastmod>2020-04-04</lastmod>
+  </url>  <url>
+    <loc>https://gpuinsight.com/gpu_performance/</loc>
+    <lastmod>2020-04-04</lastmod>
   </url>  <url>
     <loc>https://gpuinsight.com/fermi/</loc>
-    <lastmod>2020-02-03</lastmod>
+    <lastmod>2020-04-04</lastmod>
+  </url>  <url>
+    <loc>https://gpuinsight.com/GLSLCompilerPhases/</loc>
+    <lastmod>2020-04-04</lastmod>
   </url>
 </urlset>
