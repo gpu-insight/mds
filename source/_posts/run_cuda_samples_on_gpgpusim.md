@@ -42,8 +42,8 @@ make NVCCFLAGS="--cudart shared"
 # Run Samples
 在 Run Samples 之前，需要配置GPGPU-Sim的仿真参数和`libcudart.so`的路径:
 ```bash
-cp gpgpu-sim-src-dir/configs/tested-cfgs/SM2_GTX480/* /path/to/samples
-source gpgpu-sim-src-dir/setup_environment
+cp /path/to/gpgpu-sim/configs/tested-cfgs/SM2_GTX480/* /path/to/executables
+source /path/to/gpgpu-sim/setup_environment
 ```
 
 现在可以让CUDA Samples运行在GPGPU-Sim仿真器上了。
