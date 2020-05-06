@@ -48,5 +48,12 @@ source /path/to/gpgpu-sim/setup_environment
 
 现在可以让CUDA Samples运行在GPGPU-Sim仿真器上了。
 
+# Documents
+```bash
+find /usr/local/cuda-9.0 -name '*.pdf' -printf '%f\n'
+```
+
+通过上面的命令可以找到介绍如何编写Samples以及相关的图形学原理的文档，亦包括CUDA编程的相关文档，可供初学者参考。
+
 # References:
 [0. GPGPU-Sim安装过程](/gpgpusim_install/)
