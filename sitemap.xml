@@ -2,79 +2,86 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://gpuinsight.com/baidu_verify_AYq2W6RWM4.html</loc>
-    
-    <lastmod>2021-04-19T08:20:00.956Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://gpuinsight.com/run_cuda_samples_on_gpgpusim/</loc>
     
-    <lastmod>2021-04-19T08:20:00.956Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.973Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://gpuinsight.com/tbr/</loc>
+    <loc>https://gpuinsight.com/baidu_verify_AYq2W6RWM4.html</loc>
     
-    <lastmod>2021-04-19T08:20:00.956Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.973Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://gpuinsight.com/vulkan_study_plan/</loc>
     
-    <lastmod>2021-04-19T08:20:00.956Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.973Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://gpuinsight.com/tbr/</loc>
+    
+    <lastmod>2021-04-19T08:44:54.973Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://gpuinsight.com/gpu_terms/</loc>
     
-    <lastmod>2021-04-19T08:20:00.948Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://gpuinsight.com/rendering_pipeline/</loc>
-    
-    <lastmod>2021-04-19T08:20:00.948Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.965Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://gpuinsight.com/gpu_vs_cpu/</loc>
     
-    <lastmod>2021-04-19T08:20:00.948Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://gpuinsight.com/gpgpusim_install/</loc>
-    
-    <lastmod>2021-04-19T08:20:00.948Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.965Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://gpuinsight.com/gpu_performance/</loc>
     
-    <lastmod>2021-04-19T08:20:00.948Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.965Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://gpuinsight.com/gpgpusim_install/</loc>
+    
+    <lastmod>2021-04-19T08:44:54.965Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://gpuinsight.com/rendering_pipeline/</loc>
+    
+    <lastmod>2021-04-19T08:44:54.965Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://gpuinsight.com/fermi/</loc>
     
-    <lastmod>2021-04-19T08:20:00.944Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.961Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://gpuinsight.com/arm_mali_g76/</loc>
+    
+    <lastmod>2021-04-19T08:44:54.957Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://gpuinsight.com/GLSLCompilerPhases/</loc>
     
-    <lastmod>2021-04-19T08:20:00.944Z</lastmod>
+    <lastmod>2021-04-19T08:44:54.957Z</lastmod>
     
   </url>
   
