@@ -5,20 +5,18 @@
   
 
   
-  <title>CPU和GPU的区别 | GPU 观察</title>
+  <title>GPU优化 | GPU 观察</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="通过阅读本文你可以知道CPU和GPU的区别是什么。 结构  上图是CPU和GPU的结构对比图。通过对比可以看出：  CPU的计算单元较复杂，但是个数较少；GPU的计算单元相对简单，但是个数很多 CPU的控制单元较复杂；GPU的控制单元相对简单，分布在各计算核 CPU的片上缓存较大；GPU的片上缓存较小，分布在各计算核  为何他们的结构会差别这么大？这还得从他们的设计目标说起。 设计我们知道，GPU">
-<meta name="keywords" content="GPU,CPU">
+  <meta name="description" content="通过阅读本文，你将知道：  什么是GPU优化 优化GPU的思路是怎样的 常见的优化GPU的方法有哪些  GPU优化在做GPU优化之前，有三点一定要记住：  定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功 瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的 尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可  如果我">
+<meta name="keywords" content="GPU,Optimize">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CPU和GPU的区别">
-<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_vs_cpu&#x2F;index.html">
+<meta property="og:title" content="GPU优化">
+<meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_optimize&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
-<meta property="og:description" content="通过阅读本文你可以知道CPU和GPU的区别是什么。 结构  上图是CPU和GPU的结构对比图。通过对比可以看出：  CPU的计算单元较复杂，但是个数较少；GPU的计算单元相对简单，但是个数很多 CPU的控制单元较复杂；GPU的控制单元相对简单，分布在各计算核 CPU的片上缓存较大；GPU的片上缓存较小，分布在各计算核  为何他们的结构会差别这么大？这还得从他们的设计目标说起。 设计我们知道，GPU">
+<meta property="og:description" content="通过阅读本文，你将知道：  什么是GPU优化 优化GPU的思路是怎样的 常见的优化GPU的方法有哪些  GPU优化在做GPU优化之前，有三点一定要记住：  定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功 瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的 尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可  如果我">
 <meta property="og:locale" content="cn">
-<meta property="og:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_vs_cpu&#x2F;1.png">
 <meta property="og:updated_time" content="2021-04-20T12:41:50.732Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_vs_cpu&#x2F;1.png">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
   
@@ -65,10 +63,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-gpu_vs_cpu" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-gpu_optimize" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/gpu_vs_cpu/" class="article-date">
-  <time datetime="2019-12-29T00:00:00.000Z" itemprop="datePublished">2019-12-29</time>
+    <a href="/gpu_optimize/" class="article-date">
+  <time datetime="2021-04-20T00:00:00.000Z" itemprop="datePublished">2021-04-20</time>
 </a>
     
   </div>
@@ -79,7 +77,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      CPU和GPU的区别
+      GPU优化
     </h1>
   
 
@@ -87,40 +85,111 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>通过阅读本文你可以知道CPU和GPU的区别是什么。</p>
-<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><img src="/gpu_vs_cpu/1.png" class="" title="CPU与GPU的结构">
-
-<p>上图是CPU和GPU的结构对比图。通过对比可以看出：</p>
+        <p>通过阅读本文，你将知道：</p>
 <ol>
-<li>CPU的计算单元较复杂，但是个数较少；GPU的计算单元相对简单，但是个数很多</li>
-<li>CPU的控制单元较复杂；GPU的控制单元相对简单，分布在各计算核</li>
-<li>CPU的片上缓存较大；GPU的片上缓存较小，分布在各计算核</li>
+<li>什么是GPU优化</li>
+<li>优化GPU的思路是怎样的</li>
+<li>常见的优化GPU的方法有哪些</li>
 </ol>
-<p>为何他们的结构会差别这么大？这还得从他们的设计目标说起。</p>
-<h1 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h1><p>我们知道，GPU最开始是专门用来做图像渲染的。图像渲染有以下特点：</p>
+<h1 id="GPU优化"><a href="#GPU优化" class="headerlink" title="GPU优化"></a>GPU优化</h1><p>在做GPU优化之前，有三点一定要记住：</p>
 <ol>
-<li>被渲染的场景由非常多的顶点组成</li>
-<li>顶点组成的场景会被光栅化成非常多的片段</li>
-<li>对每个顶点或片段的处理逻辑都是一样的</li>
+<li>定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功</li>
+<li>瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的</li>
+<li>尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可</li>
 </ol>
-<p>这类数据可以称作流数据。流数据具有数据量大和每个数据分量的处理逻辑类似的特点。NVIDIA的GPU中有一个概念是Stream Processor，即流处理器。流处理器处理的数据即为流数据。</p>
-<p>所以，GPU的设计目标是提高数据吞吐量。</p>
-<p>CPU要处理的任务从一开始就特别复杂，它得保证具有复杂控制逻辑的程序快速运行，而且还得支持多任务。多任务要求CPU的运行频率较高，这样才能让用户感觉多个任务是在并发执行。</p>
-<p>所以，GPU的设计目标是低时延。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
-<li>CPU需要很强的通用性来处理各种不同的数据类型，同时又要逻辑判断又会引入大量的分支跳转和中断的处理。这些都使得CPU的内部结构异常复杂。而GPU面对的则是类型高度统一的、相互无依赖的大规模数据和不需要被打断的纯净的计算环境。</li>
-<li>CPU是几个教授组成的，而GPU是很多个小学生组成的。</li>
-<li>CPU采用基于低延时的设计；GPU采用基于高吞吐量的设计。</li>
+<p>如果我们说应用程序处理阶段是瓶颈，代表着在一帧的渲染过程中，它大部分时间都是是整个流水线中最慢的阶段。</p>
+<p>如果某个阶段已经不能再优化了，那么可以让其他阶段做更多的事情。类似于单位时间内可以渲染的帧的数量已经无法提升，那么可以提高每一帧的渲染质量。</p>
+<h1 id="瓶颈定位"><a href="#瓶颈定位" class="headerlink" title="瓶颈定位"></a>瓶颈定位</h1><p>瓶颈定位的思路，</p>
+<ol>
+<li>为待测阶段设计若干测试用例，各测试用例在该阶段的工作量递减，其他阶段的工作量保持不变。如果帧率提升，那么该阶段很有可能就是瓶颈。</li>
+<li>为待测阶段设计若干测试用例，各测试用例在该阶段的工作量不变，其他阶段的工作量递减。如果帧率保持不变，那么该阶段很有可能就是瓶颈。</li>
 </ol>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://www.cnblogs.com/biglucky/p/4223565.html" target="_blank" rel="noopener">https://www.cnblogs.com/biglucky/p/4223565.html</a></p>
+<p>GPU流水线可以大致划分为四个阶段，分别为：应用程序处理阶段、几何处理阶段、光栅化阶段和像素处理阶段。接下来，我们详细介绍每个阶段的可用的瓶颈定位方法。</p>
+<h2 id="应用程序处理阶段"><a href="#应用程序处理阶段" class="headerlink" title="应用程序处理阶段"></a>应用程序处理阶段</h2><ul>
+<li>直接查看CPU的使用率<ul>
+<li>如果CPU使用率维持在100%或者接近100%，则可以简单地认为应用程序处理阶段是瓶颈。</li>
+<li>这种方式有的时候不靠谱，因为有可能CPU是在等待GPU完成一帧的渲染。</li>
+</ul>
+</li>
+<li>架空GPU的情况下查看CPU的使用率<ul>
+<li>架空GPU方式可以用一个空的驱动程序。</li>
+<li>这种方式的缺点是：检测不到驱动程序的处理导致的瓶颈问题以及CPU和GPU交互导致的瓶颈问题。</li>
+</ul>
+</li>
+<li>让CPU降频或超频运行<ul>
+<li>如果降频导致性能相应地等比例降低，那可以认为应用程序处理阶段是瓶颈。超频是类似的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="几何处理阶段"><a href="#几何处理阶段" class="headerlink" title="几何处理阶段"></a>几何处理阶段</h2><ul>
+<li>增加顶点属性<ul>
+<li>增加顶点属性（如纹理坐标）相当于增加了顶点抓取的数据量，如果增加后GPU性能下降则可以认为顶点抓取便是瓶颈。</li>
+</ul>
+</li>
+<li>增加染色程序的大小<ul>
+<li>增加染色程序的长度之后，如果GPU性能下降则可以认为顶点处理是瓶颈。</li>
+<li>需要注意，要避免编译器优化掉添加的无效指令。</li>
+</ul>
+</li>
+</ul>
+<h2 id="光栅化阶段"><a href="#光栅化阶段" class="headerlink" title="光栅化阶段"></a>光栅化阶段</h2><ul>
+<li>Shadow Map Generation这个功能使用的像素染色程序非常简单，使用这个功能的时候，光栅化和像素合并阶段都有可能成为瓶颈。</li>
+<li>在渲染小三角形比较多的场景时（如草地或树叶），光栅化可能会成为瓶颈。验证方法是：增加染色程序的大小。如果渲染一帧的时间没有增加，那么光栅化阶段便是瓶颈。</li>
+</ul>
+<h2 id="像素处理阶段"><a href="#像素处理阶段" class="headerlink" title="像素处理阶段"></a>像素处理阶段</h2><ul>
+<li>降低屏幕分辨率<ul>
+<li>如果把屏幕分辨率降低可以显著提升帧率，那么很有可能像素处理阶段便是瓶颈。</li>
+</ul>
+</li>
+<li>增加片段染色程序的大小<ul>
+<li>增加染色程序的长度之后，如果GPU性能下降则可以认为像素处理是瓶颈。</li>
+<li>需要注意，要避免编译器优化掉添加的无效指令。</li>
+</ul>
+</li>
+<li>简化片段染色程序<ul>
+<li>简化片段染色程序之后，如果一帧的渲染时间下降明显则可以认为像素处理是瓶颈。</li>
+</ul>
+</li>
+<li>降低纹理大小</li>
+<li>修改缓冲区的位深度</li>
+<li>打开关闭混合</li>
+<li>改变混合模式</li>
+<li>渲染头发、草地、树叶等（像素染色程序简单</li>
+</ul>
+<h1 id="优化瓶颈"><a href="#优化瓶颈" class="headerlink" title="优化瓶颈"></a>优化瓶颈</h1><p>对于应用程序处理阶段，</p>
+<ul>
+<li>提高代码运行效率</li>
+<li>提高存储访问效率</li>
+<li>减少存储访问</li>
+</ul>
+<p>对于几何处理阶段，</p>
+<ul>
+<li>优化染色程序，尤其是光照相关</li>
+<li>顶点预加载</li>
+<li>顶点数据压缩</li>
+</ul>
+<p>对于光栅化阶段，</p>
+<ul>
+<li>Early Z</li>
+<li>开启背面消隐</li>
+</ul>
+<p>对于像素处理阶段，</p>
+<ul>
+<li>Early Z</li>
+<li>开启背面消隐</li>
+<li>数据压缩</li>
+<li>像素和深度缓冲区合并</li>
+<li>Forward Pixel Killing</li>
+<li>Transaction Elimination</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="cknq0ocec000h4mntg1jz9ne2" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_optimize/" data-id="cknq0oce4000c4mnt1pete7py" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li></ul>
 
     </footer>
   </div>
@@ -128,19 +197,10 @@
     
 <nav id="article-nav">
   
-    <a href="/rendering_pipeline/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          图形渲染管线
-        
-      </div>
-    </a>
   
-  
-    <a href="/vulkan_study_plan/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/arm_mali_g76/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Vulkan学习计划</div>
+      <div class="article-nav-title">Arm发布Mali-G76 GPU</div>
     </a>
   
 </nav>

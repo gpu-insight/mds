@@ -61,6 +61,141 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-gpu_optimize" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/gpu_optimize/" class="article-date">
+  <time datetime="2021-04-20T00:00:00.000Z" itemprop="datePublished">2021-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/gpu_optimize/">GPU优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>通过阅读本文，你将知道：</p>
+<ol>
+<li>什么是GPU优化</li>
+<li>优化GPU的思路是怎样的</li>
+<li>常见的优化GPU的方法有哪些</li>
+</ol>
+<h1 id="GPU优化"><a href="#GPU优化" class="headerlink" title="GPU优化"></a>GPU优化</h1><p>在做GPU优化之前，有三点一定要记住：</p>
+<ol>
+<li>定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功</li>
+<li>瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的</li>
+<li>尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可</li>
+</ol>
+<p>如果我们说应用程序处理阶段是瓶颈，代表着在一帧的渲染过程中，它大部分时间都是是整个流水线中最慢的阶段。</p>
+<p>如果某个阶段已经不能再优化了，那么可以让其他阶段做更多的事情。类似于单位时间内可以渲染的帧的数量已经无法提升，那么可以提高每一帧的渲染质量。</p>
+<h1 id="瓶颈定位"><a href="#瓶颈定位" class="headerlink" title="瓶颈定位"></a>瓶颈定位</h1><p>瓶颈定位的思路，</p>
+<ol>
+<li>为待测阶段设计若干测试用例，各测试用例在该阶段的工作量递减，其他阶段的工作量保持不变。如果帧率提升，那么该阶段很有可能就是瓶颈。</li>
+<li>为待测阶段设计若干测试用例，各测试用例在该阶段的工作量不变，其他阶段的工作量递减。如果帧率保持不变，那么该阶段很有可能就是瓶颈。</li>
+</ol>
+<p>GPU流水线可以大致划分为四个阶段，分别为：应用程序处理阶段、几何处理阶段、光栅化阶段和像素处理阶段。接下来，我们详细介绍每个阶段的可用的瓶颈定位方法。</p>
+<h2 id="应用程序处理阶段"><a href="#应用程序处理阶段" class="headerlink" title="应用程序处理阶段"></a>应用程序处理阶段</h2><ul>
+<li>直接查看CPU的使用率<ul>
+<li>如果CPU使用率维持在100%或者接近100%，则可以简单地认为应用程序处理阶段是瓶颈。</li>
+<li>这种方式有的时候不靠谱，因为有可能CPU是在等待GPU完成一帧的渲染。</li>
+</ul>
+</li>
+<li>架空GPU的情况下查看CPU的使用率<ul>
+<li>架空GPU方式可以用一个空的驱动程序。</li>
+<li>这种方式的缺点是：检测不到驱动程序的处理导致的瓶颈问题以及CPU和GPU交互导致的瓶颈问题。</li>
+</ul>
+</li>
+<li>让CPU降频或超频运行<ul>
+<li>如果降频导致性能相应地等比例降低，那可以认为应用程序处理阶段是瓶颈。超频是类似的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="几何处理阶段"><a href="#几何处理阶段" class="headerlink" title="几何处理阶段"></a>几何处理阶段</h2><ul>
+<li>增加顶点属性<ul>
+<li>增加顶点属性（如纹理坐标）相当于增加了顶点抓取的数据量，如果增加后GPU性能下降则可以认为顶点抓取便是瓶颈。</li>
+</ul>
+</li>
+<li>增加染色程序的大小<ul>
+<li>增加染色程序的长度之后，如果GPU性能下降则可以认为顶点处理是瓶颈。</li>
+<li>需要注意，要避免编译器优化掉添加的无效指令。</li>
+</ul>
+</li>
+</ul>
+<h2 id="光栅化阶段"><a href="#光栅化阶段" class="headerlink" title="光栅化阶段"></a>光栅化阶段</h2><ul>
+<li>Shadow Map Generation这个功能使用的像素染色程序非常简单，使用这个功能的时候，光栅化和像素合并阶段都有可能成为瓶颈。</li>
+<li>在渲染小三角形比较多的场景时（如草地或树叶），光栅化可能会成为瓶颈。验证方法是：增加染色程序的大小。如果渲染一帧的时间没有增加，那么光栅化阶段便是瓶颈。</li>
+</ul>
+<h2 id="像素处理阶段"><a href="#像素处理阶段" class="headerlink" title="像素处理阶段"></a>像素处理阶段</h2><ul>
+<li>降低屏幕分辨率<ul>
+<li>如果把屏幕分辨率降低可以显著提升帧率，那么很有可能像素处理阶段便是瓶颈。</li>
+</ul>
+</li>
+<li>增加片段染色程序的大小<ul>
+<li>增加染色程序的长度之后，如果GPU性能下降则可以认为像素处理是瓶颈。</li>
+<li>需要注意，要避免编译器优化掉添加的无效指令。</li>
+</ul>
+</li>
+<li>简化片段染色程序<ul>
+<li>简化片段染色程序之后，如果一帧的渲染时间下降明显则可以认为像素处理是瓶颈。</li>
+</ul>
+</li>
+<li>降低纹理大小</li>
+<li>修改缓冲区的位深度</li>
+<li>打开关闭混合</li>
+<li>改变混合模式</li>
+<li>渲染头发、草地、树叶等（像素染色程序简单</li>
+</ul>
+<h1 id="优化瓶颈"><a href="#优化瓶颈" class="headerlink" title="优化瓶颈"></a>优化瓶颈</h1><p>对于应用程序处理阶段，</p>
+<ul>
+<li>提高代码运行效率</li>
+<li>提高存储访问效率</li>
+<li>减少存储访问</li>
+</ul>
+<p>对于几何处理阶段，</p>
+<ul>
+<li>优化染色程序，尤其是光照相关</li>
+<li>顶点预加载</li>
+<li>顶点数据压缩</li>
+</ul>
+<p>对于光栅化阶段，</p>
+<ul>
+<li>Early Z</li>
+<li>开启背面消隐</li>
+</ul>
+<p>对于像素处理阶段，</p>
+<ul>
+<li>Early Z</li>
+<li>开启背面消隐</li>
+<li>数据压缩</li>
+<li>像素和深度缓冲区合并</li>
+<li>Forward Pixel Killing</li>
+<li>Transaction Elimination</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://gpuinsight.com/gpu_optimize/" data-id="cknq0oce4000c4mnt1pete7py" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-arm_mali_g76" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/arm_mali_g76/" class="article-date">
@@ -142,7 +277,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/arm_mali_g76/" data-id="cknphaklj001e0frq37t3bt9w" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/arm_mali_g76/" data-id="cknq0ocf1001h4mnt8rni7csl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -212,7 +347,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/run_cuda_samples_on_gpgpusim/" data-id="cknphakkq000h0frq1gmx3q3z" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/run_cuda_samples_on_gpgpusim/" data-id="cknq0ocee000j4mnt8rxza0yf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
@@ -377,7 +512,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/rendering_pipeline/" data-id="cknphakll001f0frqgs0ab6r6" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/rendering_pipeline/" data-id="cknq0ocf2001i4mnt847uhf90" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li></ul>
@@ -441,7 +576,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="cknphakko000g0frq8nfv9p8f" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="cknq0ocec000h4mntg1jz9ne2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -526,7 +661,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/vulkan_study_plan/" data-id="cknphakkt000l0frq4hjgddjo" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/vulkan_study_plan/" data-id="cknq0ocej000o4mnt69g127w0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li></ul>
@@ -622,7 +757,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_performance/" data-id="cknphakkk000c0frqeefh46w8" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_performance/" data-id="cknq0oce7000d4mnt4wx3bjp0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li></ul>
@@ -701,7 +836,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_terms/" data-id="cknphakkm000d0frqdwb8c4qu" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_terms/" data-id="cknq0oceb000g4mnth60obcm7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
@@ -795,7 +930,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/tbr/" data-id="cknphakkr000j0frq3i9r0fa7" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/tbr/" data-id="cknq0oceg000l4mnt6cz54uos" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li></ul>
@@ -861,63 +996,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/GLSLCompilerPhases/" data-id="cknphakke00080frq1p03fscq" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/GLSLCompilerPhases/" data-id="cknq0oce000084mnteb4b5qq9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-fermi" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/fermi/" class="article-date">
-  <time datetime="2019-11-11T00:00:00.000Z" itemprop="datePublished">2019-11-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/fermi/">Fermi架构介绍</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>Fermi是NVIDIA公司的GPU架构的名称。取这个名字是为了纪念美籍著名意大利物理学家Erico Fermi。</p>
-<p>Erico Fermi造出了人类第一台可控核反应堆—芝加哥一号堆，被称为“原子能之父”，在1938年获得了诺贝尔物理学奖。</p>
-<p>NVIDIA声称Fermi架构是世界上第一个完整地支持通用计算的GPU架构。</p>
-<h1 id="架构模型"><a href="#架构模型" class="headerlink" title="架构模型"></a>架构模型</h1><img src="/fermi/fermi-0.png" class="" title="Fermi结构">
-<img src="/fermi/fermi-1.png" class="" title="SM结构">
-<img src="/fermi/fermi-2.png" class="" title="SM执行Warp指令">
-
-<h1 id="编程模型"><a href="#编程模型" class="headerlink" title="编程模型"></a>编程模型</h1><h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>Application可以包含一个或多个<a href="#Kernel">Kernel</a>，通常用来做顶点/像素染色或者通用计算。与常见的CPU程序相比，Application的分支跳转语句相对较少；程序长度相对较短；算数运算类语句相对较多。</p>
-<p>Application支持OpenGL、CUDA、OpenCL和Direct Compute API。</p>
-<h2 id="Kernel"><a href="#Kernel" class="headerlink" title="Kernel"></a>Kernel</h2><p>一个<a href="#Grid">Grid</a>执行一个Kernel。这是CUDA和OpenCL中的概念，意指计算算法单元。需要注意的是它和操作系统中的内核不是同一个概念。</p>
-<p>Kernel在C语言的基础上扩展了并行运算的语法，以取代串行的循环等语句。除此之外，它还支持C++、Fortran、Java、MATLAB和Python。</p>
-<h2 id="Grid"><a href="#Grid" class="headerlink" title="Grid"></a>Grid</h2><p>Grid可以包含一个或多个<a href="#ThreadBlock">ThreadBlock</a>。与Kernel是一一对应的关系。</p>
-<h2 id="ThreadBlock"><a href="#ThreadBlock" class="headerlink" title="ThreadBlock"></a>ThreadBlock</h2><p>ThreadBlock可以包含最多48个<a href="#Warp">Warp</a>，也就是1536个<a href="线程">线程</a>。一个ThreadBlock里面的所有线程都运行在同一个SM上，他们之间可以协作和共享存储。</p>
-<h2 id="Warp"><a href="#Warp" class="headerlink" title="Warp"></a>Warp</h2><p>一个Warp包含32个<a href="#Thread">Thread</a>，不同ThreadBlock中的Warp可以并行执行。Warp是SM中的基本调度单元。</p>
-<h2 id="Thread"><a href="#Thread" class="headerlink" title="Thread"></a>Thread</h2><p>多个Thread可以并行执行，Fermi采用SIMT（Single Instruction Multiple Threads）架构。Warp可以快速切换，这是因为每个线程都有自己独立的寄存器和私有存储，Warp切换时不需要数据搬运。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/fermi/" data-id="cknphakkg00090frq83bk04p9" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
 
     </footer>
   </div>
@@ -944,7 +1026,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
     </div>
   </div>
 
@@ -954,7 +1036,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Fermi/" style="font-size: 15px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 15px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/IMR/" style="font-size: 10px;">IMR</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/Vulkan/" style="font-size: 10px;">Vulkan</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">图形渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
+      <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Fermi/" style="font-size: 15px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 15px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/IMR/" style="font-size: 10px;">IMR</a> <a href="/tags/Optimize/" style="font-size: 10px;">Optimize</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/Vulkan/" style="font-size: 10px;">Vulkan</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">图形渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
     </div>
   </div>
 
@@ -976,6 +1058,10 @@
       <ul>
         
           <li>
+            <a href="/gpu_optimize/">GPU优化</a>
+          </li>
+        
+          <li>
             <a href="/arm_mali_g76/">Arm发布Mali-G76 GPU</a>
           </li>
         
@@ -989,10 +1075,6 @@
         
           <li>
             <a href="/gpu_vs_cpu/">CPU和GPU的区别</a>
-          </li>
-        
-          <li>
-            <a href="/vulkan_study_plan/">Vulkan学习计划</a>
           </li>
         
       </ul>
