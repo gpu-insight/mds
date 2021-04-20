@@ -7,15 +7,15 @@
   
   <title>GPU优化 | GPU 观察</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="通过阅读本文，你将知道：  什么是GPU优化 优化GPU的思路是怎样的 常见的优化GPU的方法有哪些  GPU优化在做GPU优化之前，有三点一定要记住：  定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功 瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的 尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可  如果我">
+  <meta name="description" content="通过阅读本文，你将知道：  什么是GPU优化 优化GPU的思路是怎样的 常见的优化GPU的方法有哪些  GPU优化在做GPU优化之前，以下几点一定要记住：  定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功 瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的 尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可 如果我">
 <meta name="keywords" content="GPU,Optimize">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GPU优化">
 <meta property="og:url" content="https:&#x2F;&#x2F;gpuinsight.com&#x2F;gpu_optimize&#x2F;index.html">
 <meta property="og:site_name" content="GPU 观察">
-<meta property="og:description" content="通过阅读本文，你将知道：  什么是GPU优化 优化GPU的思路是怎样的 常见的优化GPU的方法有哪些  GPU优化在做GPU优化之前，有三点一定要记住：  定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功 瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的 尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可  如果我">
+<meta property="og:description" content="通过阅读本文，你将知道：  什么是GPU优化 优化GPU的思路是怎样的 常见的优化GPU的方法有哪些  GPU优化在做GPU优化之前，以下几点一定要记住：  定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功 瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的 尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可 如果我">
 <meta property="og:locale" content="cn">
-<meta property="og:updated_time" content="2021-04-20T12:41:50.732Z">
+<meta property="og:updated_time" content="2021-04-20T13:01:48.092Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternate" href="/atom.xml" title="GPU 观察" type="application/atom+xml">
@@ -91,14 +91,14 @@
 <li>优化GPU的思路是怎样的</li>
 <li>常见的优化GPU的方法有哪些</li>
 </ol>
-<h1 id="GPU优化"><a href="#GPU优化" class="headerlink" title="GPU优化"></a>GPU优化</h1><p>在做GPU优化之前，有三点一定要记住：</p>
+<h1 id="GPU优化"><a href="#GPU优化" class="headerlink" title="GPU优化"></a>GPU优化</h1><p>在做GPU优化之前，以下几点一定要记住：</p>
 <ol>
 <li>定位到瓶颈是前提。优化非瓶颈阶段，相当于做无用功</li>
 <li>瓶颈总是存在的，而且通常是动态变化的。在GPU上运行某应用程序，总有一个阶段是瓶颈，而且随着运行不同的应用程序，瓶颈也是动态变化的</li>
 <li>尽量不要过度优化。只需要优化到当前阶段不是瓶颈了即可</li>
+<li>如果我们说应用程序处理阶段是瓶颈，代表着在一帧的渲染过程中，它大部分时间都是是整个流水线中最慢的阶段。</li>
+<li>如果某个阶段已经不能再优化了，那么可以让其他阶段做更多的事情。类似于单位时间内可以渲染的帧的数量已经无法提升，那么可以提高每一帧的渲染质量。</li>
 </ol>
-<p>如果我们说应用程序处理阶段是瓶颈，代表着在一帧的渲染过程中，它大部分时间都是是整个流水线中最慢的阶段。</p>
-<p>如果某个阶段已经不能再优化了，那么可以让其他阶段做更多的事情。类似于单位时间内可以渲染的帧的数量已经无法提升，那么可以提高每一帧的渲染质量。</p>
 <h1 id="瓶颈定位"><a href="#瓶颈定位" class="headerlink" title="瓶颈定位"></a>瓶颈定位</h1><p>瓶颈定位的思路，</p>
 <ol>
 <li>为待测阶段设计若干测试用例，各测试用例在该阶段的工作量递减，其他阶段的工作量保持不变。如果帧率提升，那么该阶段很有可能就是瓶颈。</li>
@@ -182,11 +182,20 @@
 <li>Forward Pixel Killing</li>
 <li>Transaction Elimination</li>
 </ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li>GPU优化是找到GPU的瓶颈阶段并使得该阶段不再是瓶颈的过程，以及让非瓶颈阶段做更多有意义的事情的过程。</li>
+<li>瓶颈定位的思路：<ul>
+<li>为待测阶段设计若干测试用例，各测试用例在该阶段的工作量递减，其他阶段的工作量保持不变。如果帧率提升，那么该阶段很有可能就是瓶颈。</li>
+<li>为待测阶段设计若干测试用例，各测试用例在该阶段的工作量不变，其他阶段的工作量递减。如果帧率保持不变，那么该阶段很有可能就是瓶颈。</li>
+</ul>
+</li>
+<li>简单介绍了应用程序处理阶段、几何处理阶段、光栅化阶段和像素处理阶段的常见瓶颈定位和优化方法。</li>
+</ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_optimize/" data-id="cknq0oce4000c4mnt1pete7py" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_optimize/" data-id="cknq1e0br000c22qffftdhtlb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li></ul>
