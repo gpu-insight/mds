@@ -61,6 +61,98 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-warp" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/warp/" class="article-date">
+  <time datetime="2021-05-10T00:00:00.000Z" itemprop="datePublished">2021-05-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/warp/">Warp</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们知道，NVIDIA的GPU中线程调度的基本单位是<code>Warp</code>，一个<code>Warp</code>包含32个线程。</p>
+<p><code>Warp</code>的出现是为了隐藏指令执行的时延。</p>
+<p>假设执行指令如下，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">add r2, r0, r1 // r0 + r1 -&gt; r2</span><br><span class="line">add r5, r3, r4 // r3 + r4 -&gt; r5</span><br><span class="line">load r6 [r5]   // mem[r5] -&gt; r6</span><br><span class="line">mul r8 r6, r7  // r6 * r7 -&gt; r8</span><br></pre></td></tr></table></figure>
+
+<p>我们先看没有Warp时的执行情况（假设load指令执行需要3个时钟），</p>
+<img src="/warp/warp_0.png" class="">
+
+<p>上图中，每个箭头代表一个执行的线程，不同的颜色代表不同的指令。因为<code>ADD Unit</code>有4个通道，也就是说可以同时进行4个加法操作，所以每个时钟周期可以同时完成4个线程的加法操作。我们可以称这样的执行方式为<code>SIMT-4</code>。</p>
+<p>可以看到，T3和T4没有可执行的指令，执行流水线中出现“气泡”。</p>
+<p>现引入Warp。</p>
+<p>Warp0中包含4个线程：线程0、1、2、3；<br>Warp1中包含4个线程：线程4、5、6、7；<br>…</p>
+<p>如果上面的4条指令来自于顶点着色程序，那么每个线程对应于一个顶点的着色程序。也就是说，如果待渲染的顶点数为8，那么需要创建2个Warp，每个Warp渲染4个顶点（4个线程）。</p>
+<p>在Warp0执行到<code>load</code>指令时，切换到Warp1便可以让计算资源尽可能的忙起来，而不像之前每遇到长延时指令时流水线必“卡顿”。</p>
+<img src="/warp/warp_1.png" class="">
+
+<p>原先T3和T4没有硬件工作，而现在他们执行着Warp1的指令0和指令1.</p>
+<p>执行效率得到了提升。</p>
+<p>但是，如果执行Warp0的<code>load</code>指令时，发生了Cache Miss而导致3个时钟根本无法取回数据时，仍然会存在气泡存在，而这往往是比较常见的现象，如下图，</p>
+<img src="/warp/warp_2.png" class="">
+
+<p>上图虽然只有T6和T7没有硬件工作，但真实的情况是，可能是数百个时钟。</p>
+<p>在线程数量足够多的情况下，此时可以继续切换新的Warp来执行，和之前的做法一样。</p>
+<p>这里，提供另外一种做法：增加一个Warp中的线程数量。</p>
+<p>现在我们如果将一个Warp的线程数量从4提升到8，而硬件资源保持不变，执行情况会是这样，</p>
+<img src="/warp/warp_3.png" class="">
+
+<p>这可以很大程度减少“气泡”出现的概率。</p>
+<p>除此之外，还有一个好处是：Warp的后4个线程执行时不再需要取指和译码。如下图，</p>
+<img src="/warp/warp_4.png" class="">
+
+<p>这样给取指和译码的优化提供了更多的可能，也就是你可以把取指和译码做的更加复杂，更进一步，可以把指令集设计的更加复杂，当然这并不一定是一个好的选择。</p>
+<p>细心的你会发现，在T0时刻，只有<code>ADD Unit</code>工作，而另外两个硬件单元是空闲的，那怎样把他们也尽可能的用起来？</p>
+<p>一种做法是每个时钟发射多条指令，也就是指令级并行。常见的做法有VLIW和超标量。</p>
+<p>这里介绍另外一种NVIDIA的Fermi GPU的做法：同时发射两个Warp，如下图，</p>
+<img src="/warp/warp_5.png" class="">
+
+<p>可以看到Warp1的指令0不需要等到T6再执行，在T4的时候就可以开始执行，从而提高了硬件利用率。</p>
+<p>那到底Warp中线程数量的设置越大越好还是越小越好？</p>
+<p>我们知道，NVIDIA的Warp大小是32个线程，AMD的Wavefront大小是64个线程，ARM的Quad大小是4/8/16个线程。其中Warp、Wavefront、Quad是不同厂商的不同叫法。</p>
+<p>当Warp中线程数量设置较小时，可以减小遇到分支指令时的“惩罚”。下面我们介绍为什么。</p>
+<p>影响SIMT执行效率的一个重要因素是：分支指令。假设一个包含分支指令的程序如下，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if (i &gt; 0) &#123;</span><br><span class="line">  r = a + b;</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  a = a + 1;</span><br><span class="line">  r = a + c;</span><br><span class="line">&#125;</span><br><span class="line">r = r + 1;</span><br></pre></td></tr></table></figure>
+
+<p>如果Warp中的所有线程都满足<code>i &gt; 0</code>，则分支判断后执行的指令为，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">r = a + b;</span><br><span class="line">r = r + 1;</span><br></pre></td></tr></table></figure>
+<p>如果Warp中的所有线程都不满足<code>i &gt; 0</code>，则分支判断后执行的指令为，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a = a + 1;</span><br><span class="line">r = a + c;</span><br><span class="line">r = r + 1;</span><br></pre></td></tr></table></figure>
+<p>如果Warp中的<code>线程1~10</code>满足<code>i &gt; 0</code>，而<code>线程11~32</code>不满足，那么执行的指令为，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">r = a + b; // 线程1~10执行，线程11~32不执行</span><br><span class="line">a = a + 1; // 线程1~10不执行，线程11~32执行</span><br><span class="line">r = a + c; // 线程1~10不执行，线程11~32执行</span><br><span class="line">r = r + 1;</span><br></pre></td></tr></table></figure>
+<p>可以看到，当一个Warp中的线程遇到分支指令执行到不同的分支时，执行效率会下降，不同分支中的指令数量较多的情况下效率下降尤其明显。</p>
+<p>而当Warp中的线程数量较少时，线程走向不同分支的概率就会下降。</p>
+<p>这就解释了为什么当Warp中线程数量设置较小时，可以减小遇到分支指令时的“惩罚”。</p>
+<p>但Warp中线程数量设置较小时，会降低芯片面积的利用率。这个问题，读者可以自行思考一下。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://gpuinsight.com/warp/" data-id="ckoiclie5000u11l9dupp7o9s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Warp/" rel="tag">Warp</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-brain_storm_gpu_path" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/brain_storm_gpu_path/" class="article-date">
@@ -128,7 +220,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/brain_storm_gpu_path/" data-id="cknwxgax0000947jnaghrgjlg" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/brain_storm_gpu_path/" data-id="ckoiclidn000911l96j560jmv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -272,7 +364,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_optimize/" data-id="cknwxgax6000e47jnd0wh613i" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_optimize/" data-id="ckoiclidx000e11l96c8n9jo5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li></ul>
@@ -365,7 +457,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/arm_mali_g76/" data-id="cknwxgay8001j47jn5jml1542" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/arm_mali_g76/" data-id="ckoicliel001n11l939fsfiwo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -435,7 +527,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/run_cuda_samples_on_gpgpusim/" data-id="cknwxgaxf000m47jn5yhq3zro" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/run_cuda_samples_on_gpgpusim/" data-id="ckoiclie1000m11l922ve1iwf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li></ul>
@@ -600,7 +692,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/rendering_pipeline/" data-id="cknwxgaya001k47jn3tfj0tdr" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/rendering_pipeline/" data-id="ckoiclien001o11l95endh8o1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li></ul>
@@ -664,7 +756,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="cknwxgaxd000k47jn3q14a8z8" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_vs_cpu/" data-id="ckoiclie0000k11l9dncb0ae9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li></ul>
@@ -749,7 +841,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/vulkan_study_plan/" data-id="cknwxgaxj000r47jn0mle284k" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/vulkan_study_plan/" data-id="ckoiclie4000r11l9bjntc887" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li></ul>
@@ -845,7 +937,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_performance/" data-id="cknwxgax9000h47jnhlrhe203" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_performance/" data-id="ckoiclidy000h11l9hbevb8cu" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li></ul>
@@ -924,104 +1016,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/gpu_terms/" data-id="cknwxgaxa000i47jn7x1oe7n4" class="article-share-link">Share</a>
+      <a data-url="https://gpuinsight.com/gpu_terms/" data-id="ckoiclidz000i11l9bmcf3n38" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-tbr" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/tbr/" class="article-date">
-  <time datetime="2019-12-22T00:00:00.000Z" itemprop="datePublished">2019-12-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/tbr/">基于TILE的渲染</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="缩写"><a href="#缩写" class="headerlink" title="缩写"></a>缩写</h1><table>
-<thead>
-<tr>
-<th>缩写</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>GPU</td>
-<td>Graphics Processing Unit，图形处理单元。</td>
-</tr>
-<tr>
-<td>SC</td>
-<td>Shader Core，渲染核。GPU中的微处理器，负责执行顶点着色程序、片段着色程序和通用计算程序。</td>
-</tr>
-<tr>
-<td>TBR</td>
-<td>Tile-based Rendering，基于TILE的渲染。</td>
-</tr>
-<tr>
-<td>IMR</td>
-<td>Immediate Mode Rendering，立即渲染模式。</td>
-</tr>
-</tbody></table>
-<h1 id="TILE"><a href="#TILE" class="headerlink" title="TILE"></a>TILE</h1><p>TILE的必应词典翻译是：地砖、瓦片。在这里，TILE是指将整个屏幕分成若干个小格。</p>
-<p>TBR是将渲染一屏图像变换为渲染屏幕中的所有TILE。GPU中的一个SC渲染一个TILE，所以GPU中的SC越多，并行渲染TILE的能力就越强。</p>
-<p>我们知道，屏幕显示的内容是帧缓冲区中的所有像素颜色，实际上，除了颜色之外，还有像素的深度和模板也会存储在显存中。</p>
-<p>将整个屏幕划分成若干个TILE意味着，将颜色、深度、模板缓冲区划分成若干个小的存储。</p>
-<h2 id="TILE的大小"><a href="#TILE的大小" class="headerlink" title="TILE的大小"></a>TILE的大小</h2><p>一般来说，TILE的大小为32x32或者16x16。有的情况下，TILE还可以是矩形。</p>
-<p>总之，TILE的大小一般都不大。</p>
-<p>TILE足够小则意味着这个TILE对应的颜色、深度、模板缓冲区的存储在片上也可以放一份。这样做有什么好处呢？</p>
-<h2 id="TILE的好处"><a href="#TILE的好处" class="headerlink" title="TILE的好处"></a>TILE的好处</h2><p>假设GPU当前渲染的帧中包含100个三角形，且开启了深度模板测试和混合，那么，传统的渲染模式（立即渲染模式，IMR）每渲染一个三角形就需要从显存中读取这个三角形所覆盖的所有像素的颜色、深度和模板，渲染之后还需要立马写回显存。</p>
-<p>耗时耗力！</p>
-<img src="/tbr/imr_data_flow.png" class="" title="立即渲染数据流">
-
-<p>而TBR会逐个遍历TILE，首先看都有哪些三角形覆盖了当前遍历到的TILE，最坏的情况下，某个TILE被100个三角形所覆盖，那么遍历这100个三角形，每渲染一个三角形(TILE覆盖部分而非三角形全部)则将结果放到这个TILE对应的片上高速缓存中，直到遍历完所有的三角形，最后将结果写回显存中的帧缓冲区。</p>
-<p>可以看到，TBR将读写显存的频率大大降低。这首先带来的好处是低功耗，其次是高效率。</p>
-<img src="/tbr/tbr_data_flow.png" class="" title="分块渲染数据流">
-
-<p>除此之外，TILE还可以提高多采样的效率，方便应用一些优化策略。</p>
-<h1 id="TBR"><a href="#TBR" class="headerlink" title="TBR"></a>TBR</h1><p>TBR的处理逻辑是这样的：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> tile : tiles) &#123;</span><br><span class="line">    <span class="keyword">auto</span> primitives = tile.getPrimitiveList();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> primitive : primitives) &#123;</span><br><span class="line">        <span class="keyword">auto</span> fragments = primitive.getFragmentsInTile(tile);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> fragment : fragments) &#123;</span><br><span class="line">            fragment.render();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>而IMR的处理逻辑是这样的：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> drawcall : drawcalls) &#123;</span><br><span class="line">    <span class="keyword">auto</span> primitives = drawcall.getPrimitives();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> primitive : primitives) &#123;</span><br><span class="line">        <span class="keyword">auto</span> fragments = primitive.getFragments();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> fragment : fragments) &#123;</span><br><span class="line">            fragment.render();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到TBR处理逻辑的第二行有一个操作是：<code>tile.getPrimitiveList</code>，这个操作是为了获取当前帧中覆盖了这个TILE的所有图元。</p>
-<p>假设当前帧中有100个三角形，当第一个三角形所覆盖的TILE全部统计好了，也不能<code>立即渲染</code>，而需要等这100个三角形的覆盖情况都统计完成才能开始遍历TILE。这是因为如果直接开始遍历就和IMR的逻辑是一样的了，失去了TBR的优势。遍历TILE的前提便是每个TILE要能够完整表示屏幕中的一小部分，如果当前TILE中的内容还没准备好就直接开始渲染，其渲染结果虽然也可以放在片上，但是你不知道何时将片上存储的内容写回显存。</p>
-<p>使用TBR渲染模式的GPU，通常会将染色好的顶点写回显存，然后再读出来将其构建成图元，根据图元的覆盖情况构建每个TILE的图元列表，图元列表也会被写回显存。一帧的所有TILE的图元列表构建完成后，再让SC读取出为其分配的TILE的图元列表。而采用IMR渲染模式的GPU是没有读写图元列表操作的。</p>
-<p>虽然TBR多了读写图元列表的操作，但是相比于节省下来的读写缓冲区的操作，还是很划算的。</p>
-<h1 id="TBDR"><a href="#TBDR" class="headerlink" title="TBDR"></a>TBDR</h1><p>由于要绘制的场景中存在大量的遮挡情况，而被遮挡的片段也是花费了很多时间和资源才计算出它们的位置和颜色，但最终我们看不到（最终的图像不会包含这些像素点的信息），所以，这部分工作就属于无用功。</p>
-<p>TBDR（Tile Based Deferred Rendering）的核心思想是在确定好每个像素是否会最终显示到屏幕上之后，才开始渲染那些会显示到屏幕上的像素。</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
-<li><a href="https://www.imgtec.com/blog/a-look-at-the-powervr-graphics-architecture-tile-based-rendering/" target="_blank" rel="noopener">A look at the PowerVR graphics architecture: Tile-based rendering</a></li>
-<li><a href="https://community.arm.com/developer/tools-software/graphics/b/blog/posts/the-mali-gpu-an-abstract-machine-part-2---tile-based-rendering" target="_blank" rel="noopener">The Mali GPU: An Abstract Machine, Part 2 - Tile-based Rendering</a></li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://gpuinsight.com/tbr/" data-id="cknwxgaxh000p47jn3ftsf96j" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li></ul>
 
     </footer>
   </div>
@@ -1048,7 +1046,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CPU/" rel="tag">CPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fermi/" rel="tag">Fermi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GLSL/" rel="tag">GLSL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPGPU-Sim/" rel="tag">GPGPU-Sim</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GPU/" rel="tag">GPU</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IMR/" rel="tag">IMR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimize/" rel="tag">Optimize</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TBR/" rel="tag">TBR</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vulkan/" rel="tag">Vulkan</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Warp/" rel="tag">Warp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" rel="tag">分离式渲染</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">可编程渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">固定功能渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" rel="tag">图形渲染管线</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" rel="tag">统一渲染</a></li></ul>
     </div>
   </div>
 
@@ -1058,7 +1056,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Fermi/" style="font-size: 15px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 15px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/IMR/" style="font-size: 10px;">IMR</a> <a href="/tags/Optimize/" style="font-size: 10px;">Optimize</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/Vulkan/" style="font-size: 10px;">Vulkan</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">图形渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
+      <a href="/tags/CPU/" style="font-size: 10px;">CPU</a> <a href="/tags/Fermi/" style="font-size: 15px;">Fermi</a> <a href="/tags/GLSL/" style="font-size: 10px;">GLSL</a> <a href="/tags/GPGPU-Sim/" style="font-size: 15px;">GPGPU-Sim</a> <a href="/tags/GPU/" style="font-size: 20px;">GPU</a> <a href="/tags/IMR/" style="font-size: 10px;">IMR</a> <a href="/tags/Optimize/" style="font-size: 10px;">Optimize</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/TBR/" style="font-size: 15px;">TBR</a> <a href="/tags/Vulkan/" style="font-size: 10px;">Vulkan</a> <a href="/tags/Warp/" style="font-size: 10px;">Warp</a> <a href="/tags/%E5%88%86%E7%A6%BB%E5%BC%8F%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">分离式渲染</a> <a href="/tags/%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">可编程渲染管线</a> <a href="/tags/%E5%9B%BA%E5%AE%9A%E5%8A%9F%E8%83%BD%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">固定功能渲染管线</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" style="font-size: 10px;">图形渲染管线</a> <a href="/tags/%E7%BB%9F%E4%B8%80%E6%B8%B2%E6%9F%93/" style="font-size: 10px;">统一渲染</a>
     </div>
   </div>
 
@@ -1067,7 +1065,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li></ul>
     </div>
   </div>
 
@@ -1078,6 +1076,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/warp/">Warp</a>
+          </li>
         
           <li>
             <a href="/brain_storm_gpu_path/">头脑风暴之如何做自主可控GPU</a>
@@ -1093,10 +1095,6 @@
         
           <li>
             <a href="/run_cuda_samples_on_gpgpusim/">Running CUDA Samples Based on GPGPU-Sim</a>
-          </li>
-        
-          <li>
-            <a href="/rendering_pipeline/">图形渲染管线</a>
           </li>
         
       </ul>
