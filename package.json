@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
-    "hexo": "^4.0.0",
-    "hexo-deployer-git": "^2.0.0",
+    "hexo": "^6.3.0",
+    "hexo-deployer-git": "^4.0.0",
     "hexo-generator-archive": "^1.0.0",
     "hexo-generator-baidu-sitemap": "^0.1.6",
     "hexo-generator-category": "^1.0.0",
